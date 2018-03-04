@@ -18,7 +18,12 @@ export default class Manifest {
         this.data[filename] = hash.toString('hex')
     }
 
-    async sign(identifier: string, password: string) {
+    toJSON(): { [key: string]: string } {
+        return this.data
+    }
+
+    async sign(passTypeIdentifier: string, password: string) {
+        const identifier = passTypeIdentifier.replace(/^pass./, "");
         var args = [
             "smime",
             "-sign", "-binary",

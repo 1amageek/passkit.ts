@@ -158,7 +158,7 @@ export enum TextAlignment {
     Natural = "PKTextAlignmentNatural"
 }
 
-export const generate = async (template: Template, assets: Assets) => {
+export const generate = async (template: Template, assets: Assets, password: string) => {
 
     const manifest: Manifest = new Manifest('./../keys')
     const filePath: string = this.serialNumber
@@ -181,5 +181,11 @@ export const generate = async (template: Template, assets: Assets) => {
         const filename: string = `${key.replace('2x', '@2x')}.png`
         manifest.addFile(filename)
         archive.append(buffer, { name: filename } )
-    }    
+    }
+    const manifestBuffer = new Buffer(JSON.stringify(manifest.toJSON()), 'utf-8')
+    archive.append(manifestBuffer, { name: 'manifest.json' })
+
+    const signature = manifest.sign(template.passTypeIdentifier, password)
+    archive.append(signature, { name: "signature" } )
+    return archive.finalize()
 }

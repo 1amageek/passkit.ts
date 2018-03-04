@@ -1,13 +1,13 @@
 import * as Passkit from '../src/index'
 
 const info = new Passkit.BasicInformation("passTypeIdentifier", "teamIdentifier", "organizationName")
-const asset = new Passkit.Asset()
+const assets = new Passkit.Assets()
 let pass: Passkit.Pass = {
 
 }
 pass.auxiliaryFields = []
 pass.headerFields = []
 
-const ticket = new Passkit.EventTicket(info, asset, pass, "", "")
+const ticket: Passkit.EventTicket = new Passkit.EventTicket(info, pass, "", "")
 
-ticket.toPassJSON()
+Passkit.generate(ticket, assets, "wwwwwwww")

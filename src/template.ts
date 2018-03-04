@@ -88,8 +88,8 @@ export default class Template {
         this.serialNumber = serialNumber
     }
 
-    toPass(): { [key: string]: any} {
-        var pass: { [key: string]: any} = {}
+    toPass(): { [key: string]: any } {
+        var pass: { [key: string]: any } = {}
         for (const key in this) {
             pass[key] = this[key]
         }
