@@ -1,0 +1,41 @@
+import { Pass, RGB, Beacon, Location, BarcodeFormat, NFC, BasicInformation } from './index';
+import Asset from './asset';
+export default class Template {
+    description: string;
+    formatVersion: number;
+    organizationName: string;
+    passTypeIdentifier: string;
+    serialNumber: string;
+    teamIdentifier: string;
+    appLaunchURL?: string;
+    associatedStoreIdentifiers?: number[];
+    userInfo?: {
+        [key: string]: Object;
+    };
+    expirationDate?: Date;
+    voided?: boolean;
+    beacons?: Beacon[];
+    locations?: Location[];
+    maxDistance?: number;
+    relevantDate?: Date;
+    boardingPass?: Pass;
+    coupon?: Pass;
+    eventTicket?: Pass;
+    generic?: Pass;
+    storeCard?: Pass;
+    barcode?: BarcodeFormat;
+    barcodes?: BarcodeFormat[];
+    backgroundColor?: RGB;
+    foregroundColor?: RGB;
+    groupingIdentifier?: string;
+    labelColor?: RGB;
+    logoText?: string;
+    authenticationToken?: string;
+    webServiceURL?: string;
+    nfc?: NFC;
+    asset: Asset;
+    constructor(basic: BasicInformation, asset: Asset, pass: Pass, description: string, serialNumber: string);
+    toJSON(): void;
+    createPass(): Promise<void>;
+    generate(): Promise<void>;
+}

@@ -1,4 +1,12 @@
-import { RGB, Beacon, Location, BarcodeFormat, NFC, BasicInformation } from './index'
+import { Pass, RGB, Beacon, Location, BarcodeFormat, NFC, BasicInformation } from './index'
+import { PassType } from './pass'
+import * as path from 'path'
+import * as os from 'os'
+import * as fs from 'fs'
+import * as Crypto from 'crypto'
+import * as mkdirp from 'mkdirp-promise'
+import * as Archiver from 'archiver-promise'
+
 
 /// Template
 export default class Template {
@@ -22,7 +30,7 @@ export default class Template {
     associatedStoreIdentifiers?: number[]
 
     // Companion App Keys
-    userInfo?: { [key: string] : Object }
+    userInfo?: { [key: string]: Object }
 
     // Expiration Keys
     expirationDate?: Date
@@ -39,15 +47,15 @@ export default class Template {
     relevantDate?: Date
 
     // Style Keys
-    boardingPass?: {}
+    boardingPass?: Pass
 
-    coupon?: {}
+    coupon?: Pass
 
-    eventTicket?: {}
+    eventTicket?: Pass
 
-    generic?: {}
+    generic?: Pass
 
-    storeCard?: {}
+    storeCard?: Pass
 
     // Visual Appearance Keys
     barcode?: BarcodeFormat
@@ -72,11 +80,19 @@ export default class Template {
     nfc?: NFC
 
     /// constructro
-    constructor(basic: BasicInformation, description: string, serialNumber: string) {
+    constructor(basic: BasicInformation, pass: Pass, description: string, serialNumber: string) {
         this.passTypeIdentifier = basic.passTypeIdentifier
         this.teamIdentifier = basic.teamIdentifier
         this.organizationName = basic.organizationName
         this.description = description
         this.serialNumber = serialNumber
+    }
+
+    toPass(): { [key: string]: any} {
+        var pass: { [key: string]: any} = {}
+        for (const key in this) {
+            pass[key] = this[key]
+        }
+        return pass    
     }
 }

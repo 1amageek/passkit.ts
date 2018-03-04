@@ -2,7 +2,7 @@
   "name": "functions",
   "scripts": {
     "lint": "./node_modules/.bin/tslint -p tslint.json",
-    "build": "./node_modules/.bin/tsc",
+    "build": "./node_modules/.bin/tsc -d",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase experimental:functions:shell",
     "start": "npm run shell",
@@ -10,10 +10,33 @@
     "logs": "firebase functions:log"
   },
   "main": "lib/index.js",
-  "dependencies": {},
+  "dependencies": {
+    "archiver-promise": "^1.0.0",
+    "child-process-promise": "^2.2.1",
+    "crypto-promise": "^2.0.0",
+    "mkdirp-promise": "^5.0.1"
+  },
   "devDependencies": {
+    "@types/jest": "^22.1.4",
+    "@types/node": "^9.4.6",
+    "jest": "^22.4.2",
+    "ts-jest": "^22.4.1",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3"
   },
-  "private": true
+  "private": true,
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
 }

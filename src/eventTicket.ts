@@ -1,14 +1,12 @@
 import Template from './template'
-import { RGB, Beacon, Location, BarcodeFormat, NFC, BasicInformation } from './index'
+import { Pass, RGB, Beacon, Location, BarcodeFormat, NFC, BasicInformation } from './index'
 
-export class EventTicket extends Template {
+export default class EventTicket extends Template {
 
-    constructor(
-        basic: BasicInformation, 
-        description: string, 
-        serialNumber: string,
-        
-    ) {
-        super(basic, description, serialNumber)
-    }
+    // constructor(basic: BasicInformation, asset: Asset, pass: Pass, description: string, serialNumber: string) {
+    //     super(basic, asset, pass, description, serialNumber);
+    //     this.description = description
+    //     this.serialNumber = serialNumber
+    //     this.eventTicket = pass
+    // }
 }

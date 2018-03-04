@@ -1,13 +1,27 @@
-import * as Passkit from './index'
-import * as EventTicket from './eventTicket'
+import * as path from 'path'
+import * as os from 'os'
+import * as fs from 'fs'
+import * as Crypto from 'crypto'
+import * as mkdirp from 'mkdirp-promise'
+import * as Archiver from 'archiver-promise'
+import EventTicket from './eventTicket'
+import Assets from './assets'
+import Template from './template'
+import Manifest from './manifest'
 
-export { EventTicket }
+export { Assets, EventTicket }
 
 
 export class BasicInformation {
     passTypeIdentifier: string
     teamIdentifier: string
     organizationName: string
+
+    constructor(passTypeIdentifier: string, teamIdentifier: string, organizationName: string) {
+        this.passTypeIdentifier = passTypeIdentifier
+        this.teamIdentifier = teamIdentifier
+        this.organizationName = organizationName
+    }
 }
 
 /// TransitType
@@ -63,12 +77,12 @@ export enum NumberStyle {
 
 /// Pass Structure Dictionary Keys
 export type Pass = {
-    auxiliaryFields?: Field[]
-    backFields?: Field[]
     headerFields?: Field[]
     primaryFields?: Field[]
     secondaryFields?: Field[]
-    transitType: TransitType
+    auxiliaryFields?: Field[]
+    backFields?: Field[]
+    transitType?: TransitType
 }
 
 /// Beacon Dictionary Keys
@@ -142,4 +156,30 @@ export enum TextAlignment {
     Center = "PKTextAlignmentCenter",
     Right = "PKTextAlignmentRight",
     Natural = "PKTextAlignmentNatural"
+}
+
+export const generate = async (template: Template, assets: Assets) => {
+
+    const manifest: Manifest = new Manifest('./../keys')
+    const filePath: string = this.serialNumber
+    const tempLocalFile = path.join(os.tmpdir(), `${filePath}.zip`)
+    const tempLocalDir = path.dirname(tempLocalFile)
+
+    await mkdirp(tempLocalDir)
+
+    // zip
+
+    const archive = Archiver(tempLocalFile, { store: true })
+    const buffer: Buffer = new Buffer(JSON.stringify(template.toPass()), 'utf-8')
+
+    const passName: string = 'pass.json'
+    manifest.addFile(passName)
+    archive.append(buffer, { name: passName })
+
+    for (const key in assets) {
+        const buffer: Buffer = assets[key]
+        const filename: string = `${key.replace('2x', '@2x')}.png`
+        manifest.addFile(filename)
+        archive.append(buffer, { name: filename } )
+    }    
 }
