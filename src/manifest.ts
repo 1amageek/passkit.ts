@@ -16,25 +16,38 @@ export default class Manifest {
     async addFile(filename: string) {
         const hash = await Crypto.hash('md5')(filename)
         this.data[filename] = hash.toString('hex')
+        console.log(this.data)
     }
 
     toJSON(): { [key: string]: string } {
         return this.data
     }
 
-    async sign(passTypeIdentifier: string, password: string) {
+    async sign(passTypeIdentifier: string, manifestBuffer, password: string) {
         const identifier = passTypeIdentifier.replace(/^pass./, "");
-        var args = [
+        const args = [
             "smime",
             "-sign", "-binary",
-            "-signer", Path.resolve(this.keysPath, identifier + ".pem"),
+            "-signer", Path.resolve(this.keysPath, `${identifier}.pem`),
             "-certfile", Path.resolve(this.keysPath, "wwdr.pem"),
             "-passin", "pass:" + password
         ]
-        const execFile = Util.promisify(Process.execFile)
-        const { stdout, stderr } = await execFile("openssl", args)
-        const stdout_replace = stdout.split(/\n\n/)[3]
-        const signature = new Buffer(stdout_replace, "base64")
-        return signature
+        const promise = new Promise<Buffer>((resolve, reject) => {
+            const smime = Process.execFile('openssl', args, (error, stdout, stderr) => { 
+                if (error) {
+                    reject(error)
+                    return
+                }
+                if (stderr) {
+                    reject(new Error(stderr))
+                    return
+                }
+                const signature = stdout.split(/\n\n/)[3]
+                resolve(new Buffer(signature, 'base64'))
+            })
+            smime.stdin.write(manifestBuffer)
+            smime.stdin.end()
+        })
+        return promise
     }
 }

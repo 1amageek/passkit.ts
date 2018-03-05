@@ -160,9 +160,10 @@ export enum TextAlignment {
 
 export const generate = async (template: Template, assets: Assets, password: string) => {
 
-    const manifest: Manifest = new Manifest('./../keys')
-    const filePath: string = this.serialNumber
-    const tempLocalFile = path.join(os.tmpdir(), `${filePath}.zip`)
+    const manifest: Manifest = new Manifest('./keys')
+    const filePath: string = template.serialNumber
+    const tempLocalFile = path.join(process.cwd(), `/temp/${filePath}.zip`)
+    // const tempLocalFile = path.join(os.tmpdir(), `${filePath}.zip`)
     const tempLocalDir = path.dirname(tempLocalFile)
 
     await mkdirp(tempLocalDir)
@@ -173,19 +174,19 @@ export const generate = async (template: Template, assets: Assets, password: str
     const buffer: Buffer = new Buffer(JSON.stringify(template.toPass()), 'utf-8')
 
     const passName: string = 'pass.json'
-    manifest.addFile(passName)
+    await manifest.addFile(passName)
     archive.append(buffer, { name: passName })
 
     for (const key in assets) {
         const buffer: Buffer = assets[key]
         const filename: string = `${key.replace('2x', '@2x')}.png`
-        manifest.addFile(filename)
+        await manifest.addFile(filename)
         archive.append(buffer, { name: filename } )
     }
     const manifestBuffer = new Buffer(JSON.stringify(manifest.toJSON()), 'utf-8')
     archive.append(manifestBuffer, { name: 'manifest.json' })
 
-    const signature = manifest.sign(template.passTypeIdentifier, password)
+    const signature = await manifest.sign(template.passTypeIdentifier, manifestBuffer, password)
     archive.append(signature, { name: "signature" } )
-    return archive.finalize()
+    return await archive.finalize()
 }
