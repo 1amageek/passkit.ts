@@ -1,11 +1,4 @@
 import { Pass, RGB, Beacon, Location, Barcode, NFC, BasicInformation } from './index'
-import { PassType } from './pass'
-import * as path from 'path'
-import * as os from 'os'
-import * as fs from 'fs'
-import * as Crypto from 'crypto'
-import * as mkdirp from 'mkdirp-promise'
-import * as Archiver from 'archiver-promise'
 
 
 /// Template
@@ -89,10 +82,14 @@ export default class Template {
     }
 
     toPass(): { [key: string]: any } {
-        let pass: { [key: string]: any } = {}
+        const pass: { [key: string]: any } = {}
         for (const key in this) {  
             const value = this[key]
-            pass[key] = value
+            if (value instanceof RGB) {
+                pass[key] = (value as RGB).getValue()
+            } else {
+                pass[key] = value
+            }    
         }
         return pass    
     }

@@ -1,10 +1,6 @@
 import * as path from 'path'
-import * as os from 'os'
 import * as fs from 'fs'
 import * as https from 'https'
-import * as request from 'request-promise'
-import * as util from 'util'
-import * as Crypto from 'crypto'
 import * as mkdirp from 'mkdirp-promise'
 import * as Archiver from 'archiver-promise'
 import EventTicket from './eventTicket'
@@ -13,7 +9,6 @@ import Template from './template'
 import Manifest from './manifest'
 
 export { Assets, EventTicket }
-
 
 export class BasicInformation {
     passTypeIdentifier: string
@@ -137,7 +132,7 @@ export type NFC = {
 /// RGB class
 export class RGB {
     r: number = 255
-    g: number = 255 
+    g: number = 255
     b: number = 255
 
     getValue(): string {
@@ -166,15 +161,13 @@ const tmpDir: string = `${process.cwd()}/temp`
 
 const loadImage = async (url, destination) => {
     const writeStream = fs.createWriteStream(destination)
-    return new Promise<fs.ReadStream>((resolve, reject) => {
-        const request = https.get(url)
-        .on('close', () => {
-            console.log("close")
-            const readStream = fs.createReadStream(destination)
-            resolve(readStream)
+    return new Promise<Buffer>((resolve, reject) => {
+        https.get(url, (res) => {
+            res.pipe(writeStream)
         })
-        .on('error', (error) => {
-            reject(error)
+        .on('close', () => {
+            const data: Buffer = fs.readFileSync(destination)
+            resolve(data)
         })
     })
 }
@@ -185,7 +178,6 @@ export const generate = async (template: Template, assets: Assets, password: str
     const filePath: string = `/passkit/${template.serialNumber}`
     const tempLocalFile = path.join(tmpDir, `${filePath}/pass.zip`)
     const tempLocalDir = path.dirname(tempLocalFile)
-    console.log(tempLocalDir)
     await mkdirp(tempLocalDir)
 
     // zip
@@ -194,7 +186,7 @@ export const generate = async (template: Template, assets: Assets, password: str
     const buffer: Buffer = new Buffer(JSON.stringify(template.toPass()), 'utf-8')
 
     const passName: string = 'pass.json'
-    await manifest.addFile(passName)
+    await manifest.addFile(buffer, passName)
     archive.append(buffer, { name: passName })
 
     for (const key in assets) {
@@ -202,18 +194,18 @@ export const generate = async (template: Template, assets: Assets, password: str
         const url: string = assets[key]
         const destination: string = path.join(tempLocalDir, filename)
         try {
-            const readStream = await loadImage(url, destination)
-            console.log("ww", readStream)
-            // archive.append(readStream, { name: filename } )
-            await manifest.addFile(filename)   
-        } catch(error) {
+            const data = await loadImage(url, destination)
+            archive.append(data, { name: filename })
+            await manifest.addFile(data, filename)
+        } catch (error) {
             console.log(error)
+            throw error
         }
     }
     const manifestBuffer = new Buffer(JSON.stringify(manifest.toJSON()), 'utf-8')
     archive.append(manifestBuffer, { name: 'manifest.json' })
 
     const signature = await manifest.sign(template.passTypeIdentifier, manifestBuffer, password)
-    archive.append(signature, { name: "signature" } )
+    archive.append(signature, { name: "signature" })
     return await archive.finalize()
 }

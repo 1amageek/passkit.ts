@@ -1,7 +1,6 @@
-import * as Crypto from 'crypto-promise'
+import * as Crypto from 'crypto'
 import * as Path from 'path'
 import * as Process from 'child_process'
-import * as Util from 'util'
 
 export default class Manifest {
 
@@ -13,9 +12,9 @@ export default class Manifest {
         this.keysPath = keysPath
     }
 
-    async addFile(filename: string) {
-        const hash = await Crypto.hash('md5')(filename)
-        this.data[filename] = hash.toString('hex')
+    async addFile(buffer: Buffer, filename: string) {
+        const hash = Crypto.createHash('sha1')
+        this.data[filename] = hash.update(buffer).digest('hex')
     }
 
     toJSON(): { [key: string]: string } {
