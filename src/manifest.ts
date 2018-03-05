@@ -16,7 +16,6 @@ export default class Manifest {
     async addFile(filename: string) {
         const hash = await Crypto.hash('md5')(filename)
         this.data[filename] = hash.toString('hex')
-        console.log(this.data)
     }
 
     toJSON(): { [key: string]: string } {

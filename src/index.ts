@@ -1,6 +1,9 @@
 import * as path from 'path'
 import * as os from 'os'
 import * as fs from 'fs'
+import * as https from 'https'
+import * as request from 'request-promise'
+import * as util from 'util'
 import * as Crypto from 'crypto'
 import * as mkdirp from 'mkdirp-promise'
 import * as Archiver from 'archiver-promise'
@@ -158,14 +161,31 @@ export enum TextAlignment {
     Natural = "PKTextAlignmentNatural"
 }
 
+const tmpDir: string = `${process.cwd()}/temp`
+// const tempDir: string = os.tmpdir()
+
+const loadImage = async (url, destination) => {
+    const writeStream = fs.createWriteStream(destination)
+    return new Promise<fs.ReadStream>((resolve, reject) => {
+        const request = https.get(url)
+        .on('close', () => {
+            console.log("close")
+            const readStream = fs.createReadStream(destination)
+            resolve(readStream)
+        })
+        .on('error', (error) => {
+            reject(error)
+        })
+    })
+}
+
 export const generate = async (template: Template, assets: Assets, password: string) => {
 
     const manifest: Manifest = new Manifest('./keys')
-    const filePath: string = template.serialNumber
-    const tempLocalFile = path.join(process.cwd(), `/temp/${filePath}.zip`)
-    // const tempLocalFile = path.join(os.tmpdir(), `${filePath}.zip`)
+    const filePath: string = `/passkit/${template.serialNumber}`
+    const tempLocalFile = path.join(tmpDir, `${filePath}/pass.zip`)
     const tempLocalDir = path.dirname(tempLocalFile)
-
+    console.log(tempLocalDir)
     await mkdirp(tempLocalDir)
 
     // zip
@@ -178,10 +198,17 @@ export const generate = async (template: Template, assets: Assets, password: str
     archive.append(buffer, { name: passName })
 
     for (const key in assets) {
-        const buffer: Buffer = assets[key]
         const filename: string = `${key.replace('2x', '@2x')}.png`
-        await manifest.addFile(filename)
-        archive.append(buffer, { name: filename } )
+        const url: string = assets[key]
+        const destination: string = path.join(tempLocalDir, filename)
+        try {
+            const readStream = await loadImage(url, destination)
+            console.log("ww", readStream)
+            // archive.append(readStream, { name: filename } )
+            await manifest.addFile(filename)   
+        } catch(error) {
+            console.log(error)
+        }
     }
     const manifestBuffer = new Buffer(JSON.stringify(manifest.toJSON()), 'utf-8')
     archive.append(manifestBuffer, { name: 'manifest.json' })

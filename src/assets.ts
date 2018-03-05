@@ -1,14 +1,14 @@
 
 export default class Assets {
-   icon?: Buffer
-   icon2x?: Buffer
+   icon?: string
+   icon2x?: string
 
-   logo?: Buffer
-   logo2x?: Buffer
+   logo?: string
+   logo2x?: string
    
-   background?: Buffer
-   background2x?: Buffer
+   background?: string
+   background2x?: string
 
-   thumbnail?: Buffer
-   thumbnail2x?: Buffer
+   thumbnail?: string
+   thumbnail2x?: string
 }

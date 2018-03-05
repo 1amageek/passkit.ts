@@ -14,7 +14,8 @@
     "archiver-promise": "^1.0.0",
     "child-process-promise": "^2.2.1",
     "crypto-promise": "^2.0.0",
-    "mkdirp-promise": "^5.0.1"
+    "mkdirp-promise": "^5.0.1",
+    "request-promise": "^4.2.2"
   },
   "devDependencies": {
     "@types/jest": "^22.1.4",

@@ -1,4 +1,4 @@
-import { Pass, RGB, Beacon, Location, BarcodeFormat, NFC, BasicInformation } from './index'
+import { Pass, RGB, Beacon, Location, Barcode, NFC, BasicInformation } from './index'
 import { PassType } from './pass'
 import * as path from 'path'
 import * as os from 'os'
@@ -58,9 +58,9 @@ export default class Template {
     storeCard?: Pass
 
     // Visual Appearance Keys
-    barcode?: BarcodeFormat
+    barcode?: Barcode
 
-    barcodes?: BarcodeFormat[]
+    barcodes?: Barcode[]
 
     backgroundColor?: RGB
 
@@ -89,9 +89,10 @@ export default class Template {
     }
 
     toPass(): { [key: string]: any } {
-        var pass: { [key: string]: any } = {}
-        for (const key in this) {
-            pass[key] = this[key]
+        let pass: { [key: string]: any } = {}
+        for (const key in this) {  
+            const value = this[key]
+            pass[key] = value
         }
         return pass    
     }
