@@ -180,31 +180,35 @@ export const generate = async (template: Template, assets: Assets, password: str
     const tempLocalDir = path.dirname(tempLocalFile)
     await mkdirp(tempLocalDir)
 
-    // zip
-
     const archive = Archiver(tempLocalFile, { store: true })
     const buffer: Buffer = new Buffer(JSON.stringify(template.toPass()), 'utf-8')
 
+    // Add pass.json
     const passName: string = 'pass.json'
     await manifest.addFile(buffer, passName)
     archive.append(buffer, { name: passName })
 
+    // Add images
     for (const key in assets) {
         const filename: string = `${key.replace('2x', '@2x')}.png`
         const url: string = assets[key]
         const destination: string = path.join(tempLocalDir, filename)
         try {
-            const data = await loadImage(url, destination)
-            archive.append(data, { name: filename })
+            const data = await loadImage(url, destination)            
             await manifest.addFile(data, filename)
+            archive.append(data, { name: filename })
+            fs.unlinkSync(destination)
         } catch (error) {
             console.log(error)
             throw error
         }
     }
+
+    // Add manifest
     const manifestBuffer = new Buffer(JSON.stringify(manifest.toJSON()), 'utf-8')
     archive.append(manifestBuffer, { name: 'manifest.json' })
 
+    // Add signature
     const signature = await manifest.sign(template.passTypeIdentifier, manifestBuffer, password)
     archive.append(signature, { name: "signature" })
     return await archive.finalize()

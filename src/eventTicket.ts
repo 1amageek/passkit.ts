@@ -3,10 +3,8 @@ import { Pass, RGB, Beacon, Location, BarcodeFormat, NFC, BasicInformation } fro
 
 export default class EventTicket extends Template {
 
-    // constructor(basic: BasicInformation, asset: Asset, pass: Pass, description: string, serialNumber: string) {
-    //     super(basic, asset, pass, description, serialNumber);
-    //     this.description = description
-    //     this.serialNumber = serialNumber
-    //     this.eventTicket = pass
-    // }
+    constructor(basic: BasicInformation, pass: Pass, description: string, serialNumber: string) {
+        super(basic, pass, description, serialNumber)
+        this.eventTicket = pass
+    }
 }

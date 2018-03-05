@@ -1,5 +1,8 @@
 {
-  "name": "functions",
+  "private": false,
+  "name": "@1amageek/passkit",
+  "version": "0.0.1",
+  "main": "lib/index.js",
   "scripts": {
     "lint": "./node_modules/.bin/tslint -p tslint.json",
     "build": "./node_modules/.bin/tsc -d",
@@ -9,13 +12,30 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
-  "main": "lib/index.js",
+  "description": "passkit.ts is Passkit generator",
+  "contributors": [
+    {
+      "name": "Norikazu Muramoto",
+      "email": "tmy0x3@icloud.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1amageek/passkit.ts.git"
+  },
+  "keywords": [
+    "passkit",
+    "apple",
+    "typescript"
+  ],
+  "author": "1amageek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/1amageek/passkit.ts/issues"
+  },
   "dependencies": {
     "archiver-promise": "^1.0.0",
-    "child-process-promise": "^2.2.1",
-    "crypto-promise": "^2.0.0",
     "mkdirp-promise": "^5.0.1",
-    "request-promise": "^4.2.2",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
@@ -26,7 +46,6 @@
     "tslint": "^5.8.0",
     "typescript": "^2.5.3"
   },
-  "private": true,
   "jest": {
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
