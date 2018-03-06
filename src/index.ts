@@ -11,8 +11,7 @@ import Manifest from './manifest'
 
 export { Assets, EventTicket }
 
-const tmpDir: string = `${process.cwd()}/temp`
-// const tmpDir: string = `${os.tmpdir()}/passkit`
+const tmpDir: string = process.env.NODE_ENV == 'production' ? `${os.tmpdir()}/passkit` : `${process.cwd()}/temp`
 
 export interface CertificateLodingDelegate {
     /// Load secret 
