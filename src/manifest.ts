@@ -1,16 +1,11 @@
 import * as Crypto from 'crypto'
 import * as Path from 'path'
 import * as Process from 'child_process'
+import { certtificates } from './index'
 
 export default class Manifest {
 
     data: { [key: string]: string } = {}
-
-    keysPath: string
-
-    constructor(keysPath: string) {
-        this.keysPath = keysPath
-    }
 
     async addFile(buffer: Buffer, filename: string) {
         const hash = Crypto.createHash('sha1')
@@ -22,14 +17,17 @@ export default class Manifest {
     }
 
     async sign(passTypeIdentifier: string, manifestBuffer, password: string) {
-        const identifier = passTypeIdentifier.replace(/^pass./, "");
+
+        await certtificates.loadIfNeeded()
+
         const args = [
             "smime",
             "-sign", "-binary",
-            "-signer", Path.resolve(this.keysPath, `${identifier}.pem`),
-            "-certfile", Path.resolve(this.keysPath, "wwdr.pem"),
-            "-passin", "pass:" + password
+            "-signer", certtificates.secret,
+            "-certfile", certtificates.wwdr,
+            "-passin", "pass:" + certtificates.options.password
         ]
+        
         const promise = new Promise<Buffer>((resolve, reject) => {
             const smime = Process.execFile('openssl', args, (error, stdout, stderr) => { 
                 if (error) {

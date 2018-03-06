@@ -1,23 +1,18 @@
 import * as Passkit from '../src/index'
 import * as UUID from 'uuid'
+import { options } from './config'
 
+Passkit.initialize(options)
 
 describe("Manifest", () => {
 
-    // beforeAll(async () => {
-    //     const info = new Passkit.BasicInformation("pass.team.stamp.ticket", "88ACA86N96", "Stamp")
-    //     const assets = new Passkit.Assets()
-    //     let pass: Passkit.Pass = {}
-    //     pass.auxiliaryFields = []
-    //     pass.headerFields = []
-    //     const ticket: Passkit.EventTicket = new Passkit.EventTicket(info, pass, "desc", UUID.v4())
-    //     await Passkit.generate(ticket, assets, "nogunoguch1")
-    // });
+    beforeAll(async () => {
+
+    });
 
     describe("Generate", async () => {
 
         test("generate", async () => {
-            const info = new Passkit.BasicInformation("pass.team.stamp.ticket", "88ACA86N96", "Stamp")
             const assets = new Passkit.Assets()
             // assets.background = "/Users/1amageek/Desktop/passkit.ts/resource/background.png"
             // assets.background2x = "/Users/1amageek/Desktop/passkit.ts/resource/background@2x.png"
@@ -36,7 +31,7 @@ describe("Manifest", () => {
                 message: "http://google.com",
                 messageEncoding: "iso-8859-1"
             }
-            const ticket: Passkit.EventTicket = new Passkit.EventTicket(info, pass, "desc", UUID.v4())
+            const ticket: Passkit.EventTicket = new Passkit.EventTicket(pass, "Stamp", "desc", UUID.v4())
             ticket.webServiceURL = "http://google.com"
             ticket.barcode = barcode
             ticket.relevantDate = new Date()

@@ -1,4 +1,4 @@
-import { Pass, RGB, Beacon, Location, Barcode, NFC, BasicInformation } from './index'
+import * as PassKit from './index'
 
 
 /// Template
@@ -31,37 +31,37 @@ export default class Template {
     voided?: boolean
 
     // Relevance Keys
-    beacons?: Beacon[]
+    beacons?: PassKit.Beacon[]
 
-    locations?: Location[]
+    locations?: PassKit.Location[]
 
     maxDistance?: number
 
     relevantDate?: Date
 
     // Style Keys
-    boardingPass?: Pass
+    boardingPass?: PassKit.Pass
 
-    coupon?: Pass
+    coupon?: PassKit.Pass
 
-    eventTicket?: Pass
+    eventTicket?: PassKit.Pass
 
-    generic?: Pass
+    generic?: PassKit.Pass
 
-    storeCard?: Pass
+    storeCard?: PassKit.Pass
 
     // Visual Appearance Keys
-    barcode?: Barcode
+    barcode?: PassKit.Barcode
 
-    barcodes?: Barcode[]
+    barcodes?: PassKit.Barcode[]
 
-    backgroundColor?: RGB
+    backgroundColor?: PassKit.RGB
 
-    foregroundColor?: RGB
+    foregroundColor?: PassKit.RGB
 
     groupingIdentifier?: string
 
-    labelColor?: RGB
+    labelColor?: PassKit.RGB
 
     logoText?: string
 
@@ -70,13 +70,13 @@ export default class Template {
 
     webServiceURL?: string
 
-    nfc?: NFC
+    nfc?: PassKit.NFC
 
-    /// constructro
-    constructor(basic: BasicInformation, pass: Pass, description: string, serialNumber: string) {
-        this.passTypeIdentifier = basic.passTypeIdentifier
-        this.teamIdentifier = basic.teamIdentifier
-        this.organizationName = basic.organizationName
+    /// constructor
+    constructor(pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string) {
+        this.passTypeIdentifier = PassKit.certtificates.options.passTypeIdentifier
+        this.teamIdentifier = PassKit.certtificates.options.teamIdentifier
+        this.organizationName = organizationName
         this.description = description
         this.serialNumber = serialNumber
     }
@@ -85,8 +85,8 @@ export default class Template {
         const pass: { [key: string]: any } = {}
         for (const key in this) {  
             const value = this[key]
-            if (value instanceof RGB) {
-                pass[key] = (value as RGB).getValue()
+            if (value instanceof PassKit.RGB) {
+                pass[key] = (value as PassKit.RGB).getValue()
             } else {
                 pass[key] = value
             }    

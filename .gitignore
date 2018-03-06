@@ -63,3 +63,4 @@ keys/
 test/
 temp/
 resource/
+test/config.ts

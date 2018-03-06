@@ -1,10 +1,10 @@
 import Template from './template'
-import { Pass, RGB, Beacon, Location, BarcodeFormat, NFC, BasicInformation } from './index'
+import { Pass, RGB, Beacon, Location, BarcodeFormat, NFC } from './index'
 
 export default class EventTicket extends Template {
 
-    constructor(basic: BasicInformation, pass: Pass, description: string, serialNumber: string) {
-        super(basic, pass, description, serialNumber)
+    constructor(pass: Pass, organizationName: string, description: string, serialNumber: string) {
+        super(pass, organizationName, description, serialNumber)
         this.eventTicket = pass
     }
 }

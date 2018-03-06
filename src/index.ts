@@ -10,15 +10,72 @@ import Manifest from './manifest'
 
 export { Assets, EventTicket }
 
-export class BasicInformation {
+export let certtificates: Certificates
+export function initialize(options?: Options) {
+    certtificates = new Certificates(options)
+}
+
+const tmpDir: string = `${process.cwd()}/temp`
+// const tmpDir: string = os.tmpdir()
+
+export type Options = {
     passTypeIdentifier: string
     teamIdentifier: string
-    organizationName: string
+    secretURL: string
+    wwdrURL: string
+    password: string
+}
 
-    constructor(passTypeIdentifier: string, teamIdentifier: string, organizationName: string) {
-        this.passTypeIdentifier = passTypeIdentifier
-        this.teamIdentifier = teamIdentifier
-        this.organizationName = organizationName
+export class Certificates {
+    secret?: string
+    wwdr?: string
+
+    options: Options
+
+    constructor(options: Options) {
+        this.options = options
+    }
+
+    async loadCertificate(url, destination) {    
+        const writeStream = fs.createWriteStream(destination)
+        return new Promise<string>((resolve, reject) => {
+            https.get(url, (res) => {
+                res.pipe(writeStream)
+            })
+                .on('close', () => {
+                    resolve(destination)
+                })
+        })
+    }
+
+    async loadIfNeeded() {
+
+        const secretDir: string = `${tmpDir}/keys`
+
+        /// load secret
+        if (!this.isExistFile(this.secret)) {            
+            const identifier = this.options.passTypeIdentifier.replace(/^pass./, "")
+            const destination = path.resolve(secretDir, `${identifier}.pem`)
+            const tempLocalDir = path.dirname(destination)
+            await mkdirp(tempLocalDir)
+            this.secret = await this.loadCertificate(this.options.secretURL, destination)
+        }
+
+        /// load wwdr
+        if (!this.isExistFile(this.wwdr)) {
+            const identifier = this.options.passTypeIdentifier.replace(/^pass./, "")
+            const destination = path.resolve(secretDir, `wwdr.pem`)
+            this.wwdr = await this.loadCertificate(this.options.wwdrURL, destination)
+        }
+    }
+
+    isExistFile(file: string): boolean {
+        try {
+            fs.statSync(file)
+            return true
+        } catch (err) {
+            return false
+        }
     }
 }
 
@@ -156,25 +213,24 @@ export enum TextAlignment {
     Natural = "PKTextAlignmentNatural"
 }
 
-const tmpDir: string = `${process.cwd()}/temp`
-// const tempDir: string = os.tmpdir()
-
 const loadImage = async (url, destination) => {
     const writeStream = fs.createWriteStream(destination)
     return new Promise<Buffer>((resolve, reject) => {
         https.get(url, (res) => {
             res.pipe(writeStream)
         })
-        .on('close', () => {
-            const data: Buffer = fs.readFileSync(destination)
-            resolve(data)
-        })
+            .on('close', () => {
+                const data: Buffer = fs.readFileSync(destination)
+                resolve(data)
+            })
     })
 }
 
 export const generate = async (template: Template, assets: Assets, password: string) => {
 
-    const manifest: Manifest = new Manifest('./keys')
+    assets.validate()
+
+    const manifest: Manifest = new Manifest()
     const filePath: string = `/passkit/${template.serialNumber}`
     const tempLocalFile = path.join(tmpDir, `${filePath}/pass.zip`)
     const tempLocalDir = path.dirname(tempLocalFile)
@@ -194,7 +250,7 @@ export const generate = async (template: Template, assets: Assets, password: str
         const url: string = assets[key]
         const destination: string = path.join(tempLocalDir, filename)
         try {
-            const data = await loadImage(url, destination)            
+            const data = await loadImage(url, destination)
             await manifest.addFile(data, filename)
             archive.append(data, { name: filename })
             fs.unlinkSync(destination)
