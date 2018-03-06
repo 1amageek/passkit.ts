@@ -7,5 +7,5 @@ export default class Manifest {
     toJSON(): {
         [key: string]: string;
     };
-    sign(passTypeIdentifier: string, manifestBuffer: any, password: string): Promise<Buffer>;
+    sign(passTypeIdentifier: string, manifestBuffer: any): Promise<Buffer>;
 }
