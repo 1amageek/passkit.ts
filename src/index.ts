@@ -53,7 +53,7 @@ export class Certificates {
         const secretDir: string = `${tmpDir}/keys`
 
         /// load secret
-        if (!this.isExistFile(this.secret)) {            
+        if (!this.isExistFile(this.secret)) {
             const identifier = this.options.passTypeIdentifier.replace(/^pass./, "")
             const destination = path.resolve(secretDir, `${identifier}.pem`)
             const tempLocalDir = path.dirname(destination)
@@ -226,7 +226,7 @@ const loadImage = async (url, destination) => {
     })
 }
 
-export const generate = async (template: Template, assets: Assets, password: string) => {
+export const generate = async (template: Template, assets: Assets) => {
 
     assets.validate()
 
@@ -265,7 +265,7 @@ export const generate = async (template: Template, assets: Assets, password: str
     archive.append(manifestBuffer, { name: 'manifest.json' })
 
     // Add signature
-    const signature = await manifest.sign(template.passTypeIdentifier, manifestBuffer, password)
+    const signature = await manifest.sign(template.passTypeIdentifier, manifestBuffer)
     archive.append(signature, { name: "signature" })
     return await archive.finalize()
 }

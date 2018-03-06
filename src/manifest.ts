@@ -16,7 +16,7 @@ export default class Manifest {
         return this.data
     }
 
-    async sign(passTypeIdentifier: string, manifestBuffer, password: string) {
+    async sign(passTypeIdentifier: string, manifestBuffer) {
 
         await certtificates.loadIfNeeded()
 
@@ -27,7 +27,7 @@ export default class Manifest {
             "-certfile", certtificates.wwdr,
             "-passin", "pass:" + certtificates.options.password
         ]
-        
+
         const promise = new Promise<Buffer>((resolve, reject) => {
             const smime = Process.execFile('openssl', args, (error, stdout, stderr) => { 
                 if (error) {

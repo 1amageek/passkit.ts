@@ -6,10 +6,6 @@ Passkit.initialize(options)
 
 describe("Manifest", () => {
 
-    beforeAll(async () => {
-
-    });
-
     describe("Generate", async () => {
 
         test("generate", async () => {
@@ -31,6 +27,7 @@ describe("Manifest", () => {
                 message: "http://google.com",
                 messageEncoding: "iso-8859-1"
             }
+
             const ticket: Passkit.EventTicket = new Passkit.EventTicket(pass, "Stamp", "desc", UUID.v4())
             ticket.webServiceURL = "http://google.com"
             ticket.barcode = barcode

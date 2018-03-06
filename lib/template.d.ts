@@ -1,5 +1,4 @@
-import { Pass, RGB, Beacon, Location, BarcodeFormat, NFC, BasicInformation } from './index';
-import Asset from './asset';
+import * as PassKit from './index';
 export default class Template {
     description: string;
     formatVersion: number;
@@ -14,28 +13,27 @@ export default class Template {
     };
     expirationDate?: Date;
     voided?: boolean;
-    beacons?: Beacon[];
-    locations?: Location[];
+    beacons?: PassKit.Beacon[];
+    locations?: PassKit.Location[];
     maxDistance?: number;
     relevantDate?: Date;
-    boardingPass?: Pass;
-    coupon?: Pass;
-    eventTicket?: Pass;
-    generic?: Pass;
-    storeCard?: Pass;
-    barcode?: BarcodeFormat;
-    barcodes?: BarcodeFormat[];
-    backgroundColor?: RGB;
-    foregroundColor?: RGB;
+    boardingPass?: PassKit.Pass;
+    coupon?: PassKit.Pass;
+    eventTicket?: PassKit.Pass;
+    generic?: PassKit.Pass;
+    storeCard?: PassKit.Pass;
+    barcode?: PassKit.Barcode;
+    barcodes?: PassKit.Barcode[];
+    backgroundColor?: PassKit.RGB;
+    foregroundColor?: PassKit.RGB;
     groupingIdentifier?: string;
-    labelColor?: RGB;
+    labelColor?: PassKit.RGB;
     logoText?: string;
     authenticationToken?: string;
     webServiceURL?: string;
-    nfc?: NFC;
-    asset: Asset;
-    constructor(basic: BasicInformation, asset: Asset, pass: Pass, description: string, serialNumber: string);
-    toJSON(): void;
-    createPass(): Promise<void>;
-    generate(): Promise<void>;
+    nfc?: PassKit.NFC;
+    constructor(pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string);
+    toPass(): {
+        [key: string]: any;
+    };
 }

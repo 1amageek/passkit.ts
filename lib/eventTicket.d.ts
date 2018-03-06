@@ -1,6 +1,5 @@
 import Template from './template';
-import Asset from './asset';
-import { Pass, BasicInformation } from './index';
-export declare class EventTicket extends Template {
-    constructor(basic: BasicInformation, asset: Asset, pass: Pass, description: string, serialNumber: string);
+import { Pass } from './index';
+export default class EventTicket extends Template {
+    constructor(pass: Pass, organizationName: string, description: string, serialNumber: string);
 }

@@ -1,9 +1,24 @@
-import * as EventTicket from './eventTicket';
-export { EventTicket };
-export declare class BasicInformation {
+import EventTicket from './eventTicket';
+import Assets from './assets';
+import Template from './template';
+export { Assets, EventTicket };
+export declare let certtificates: Certificates;
+export declare function initialize(options?: Options): void;
+export declare type Options = {
     passTypeIdentifier: string;
     teamIdentifier: string;
-    organizationName: string;
+    secretURL: string;
+    wwdrURL: string;
+    password: string;
+};
+export declare class Certificates {
+    secret?: string;
+    wwdr?: string;
+    options: Options;
+    constructor(options: Options);
+    loadCertificate(url: any, destination: any): Promise<string>;
+    loadIfNeeded(): Promise<void>;
+    isExistFile(file: string): boolean;
 }
 export declare enum TransitType {
     Air = "PKTransitTypeAir",
@@ -50,7 +65,7 @@ export declare type Pass = {
     secondaryFields?: Field[];
     auxiliaryFields?: Field[];
     backFields?: Field[];
-    transitType: TransitType;
+    transitType?: TransitType;
 };
 export declare type Beacon = {
     major: string;
@@ -98,3 +113,4 @@ export declare enum TextAlignment {
     Right = "PKTextAlignmentRight",
     Natural = "PKTextAlignmentNatural",
 }
+export declare const generate: (template: Template, assets: Assets, password: string) => Promise<any>;
