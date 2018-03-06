@@ -10,11 +10,6 @@ import Manifest from './manifest'
 
 export { Assets, EventTicket }
 
-export let certtificates: Certificates
-export function initialize(options?: Options) {
-    certtificates = new Certificates(options)
-}
-
 const tmpDir: string = `${process.cwd()}/temp`
 // const tmpDir: string = os.tmpdir()
 
@@ -63,7 +58,6 @@ export class Certificates {
 
         /// load wwdr
         if (!this.isExistFile(this.wwdr)) {
-            const identifier = this.options.passTypeIdentifier.replace(/^pass./, "")
             const destination = path.resolve(secretDir, `wwdr.pem`)
             this.wwdr = await this.loadCertificate(this.options.wwdrURL, destination)
         }
@@ -77,6 +71,14 @@ export class Certificates {
             return false
         }
     }
+}
+
+/// Certificates
+export let certtificates: Certificates
+
+/// PassKit initialize
+export function initialize(options?: Options) {
+    certtificates = new Certificates(options)
 }
 
 /// TransitType

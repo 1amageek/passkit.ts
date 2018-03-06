@@ -2,8 +2,6 @@ import EventTicket from './eventTicket';
 import Assets from './assets';
 import Template from './template';
 export { Assets, EventTicket };
-export declare let certtificates: Certificates;
-export declare function initialize(options?: Options): void;
 export declare type Options = {
     passTypeIdentifier: string;
     teamIdentifier: string;
@@ -20,6 +18,8 @@ export declare class Certificates {
     loadIfNeeded(): Promise<void>;
     isExistFile(file: string): boolean;
 }
+export declare let certtificates: Certificates;
+export declare function initialize(options?: Options): void;
 export declare enum TransitType {
     Air = "PKTransitTypeAir",
     Boat = "PKTransitTypeBoat",

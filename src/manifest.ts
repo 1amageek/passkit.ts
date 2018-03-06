@@ -1,5 +1,4 @@
 import * as Crypto from 'crypto'
-import * as Path from 'path'
 import * as Process from 'child_process'
 import { certtificates } from './index'
 

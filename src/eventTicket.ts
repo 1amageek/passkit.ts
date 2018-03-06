@@ -1,5 +1,5 @@
 import Template from './template'
-import { Pass, RGB, Beacon, Location, BarcodeFormat, NFC } from './index'
+import { Pass } from './index'
 
 export default class EventTicket extends Template {
 

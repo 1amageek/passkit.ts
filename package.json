@@ -2,7 +2,6 @@
   "private": false,
   "name": "@1amageek/passkit",
   "version": "0.0.1",
-  "main": "lib/index.js",
   "scripts": {
     "lint": "./node_modules/.bin/tslint -p tslint.json",
     "build": "./node_modules/.bin/tsc -d",
@@ -33,6 +32,8 @@
   "bugs": {
     "url": "https://github.com/1amageek/passkit.ts/issues"
   },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "dependencies": {
     "archiver-promise": "^1.0.0",
     "mkdirp-promise": "^5.0.1",
