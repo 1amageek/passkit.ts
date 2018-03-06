@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
+import * as os from 'os'
 import * as https from 'https'
 import * as mkdirp from 'mkdirp-promise'
 import * as Archiver from 'archiver-promise'
@@ -10,8 +11,8 @@ import Manifest from './manifest'
 
 export { Assets, EventTicket }
 
-const tmpDir: string = `${process.cwd()}/temp`
-// const tmpDir: string = os.tmpdir()
+// const tmpDir: string = `${process.cwd()}/temp`
+const tmpDir: string = `${os.tmpdir()}/passkit`
 
 export type Options = {
     passTypeIdentifier: string
@@ -233,7 +234,7 @@ export const generate = async (template: Template, assets: Assets) => {
     assets.validate()
 
     const manifest: Manifest = new Manifest()
-    const filePath: string = `/passkit/${template.serialNumber}`
+    const filePath: string = `/pass/${template.serialNumber}`
     const tempLocalFile = path.join(tmpDir, `${filePath}/pass.zip`)
     const tempLocalDir = path.dirname(tempLocalFile)
     await mkdirp(tempLocalDir)
