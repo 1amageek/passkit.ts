@@ -311,7 +311,8 @@ export const generate = async (template: Template, assets: Assets) => {
     try {
         const signature = await manifest.sign(template.passTypeIdentifier, manifestBuffer)
         archive.append(signature, { name: "signature" })
-        return await archive.finalize()
+        await archive.finalize()
+        return tempLocalFile
     } catch (error) {
         throw error
     }

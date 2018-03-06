@@ -118,4 +118,4 @@ export declare enum TextAlignment {
     Right = "PKTextAlignmentRight",
     Natural = "PKTextAlignmentNatural",
 }
-export declare const generate: (template: Template, assets: Assets) => Promise<any>;
+export declare const generate: (template: Template, assets: Assets) => Promise<string>;
