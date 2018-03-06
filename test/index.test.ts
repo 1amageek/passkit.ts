@@ -32,7 +32,11 @@ describe("Manifest", () => {
             ticket.webServiceURL = "http://google.com"
             ticket.barcode = barcode
             ticket.relevantDate = new Date()
-            await Passkit.generate(ticket, assets)
-        })
+            try {
+                await Passkit.generate(ticket, assets)
+            } catch (error) {
+                console.log(error)
+            }
+        }, 10000)
     })
 })

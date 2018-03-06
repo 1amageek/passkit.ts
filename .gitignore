@@ -64,3 +64,7 @@ test/
 temp/
 resource/
 test/config.ts
+*.json
+!tsconfig.json
+!package.json
+!tslint.json

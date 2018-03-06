@@ -116,6 +116,10 @@
     // Multi-line object liiterals and function calls should have a trailing comma. This helps avoid merge conflicts.
     "trailing-comma": {"severity": "warning"}
   },
-
+  "linterOptions": {
+    "exclude": [
+      "test/*"
+    ]
+  },
   "defaultSeverity": "error"
 }

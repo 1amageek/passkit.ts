@@ -11,18 +11,30 @@ import Manifest from './manifest'
 
 export { Assets, EventTicket }
 
-// const tmpDir: string = `${process.cwd()}/temp`
-const tmpDir: string = `${os.tmpdir()}/passkit`
+const tmpDir: string = `${process.cwd()}/temp`
+// const tmpDir: string = `${os.tmpdir()}/passkit`
+
+export interface CertificateLodingDelegate {
+    /// Load secret 
+    /// return destination url
+    loadSecret(identifier: string): Promise<string>
+
+    /// Load wwdr 
+    /// return destination url
+    loadWWDR(): Promise<string>
+}
 
 export type Options = {
     passTypeIdentifier: string
     teamIdentifier: string
-    secretURL: string
-    wwdrURL: string
+    secretURL?: string
+    wwdrURL?: string
     password: string
+    delegate?: CertificateLodingDelegate
 }
 
 export class Certificates {
+
     secret?: string
     wwdr?: string
 
@@ -32,7 +44,7 @@ export class Certificates {
         this.options = options
     }
 
-    async loadCertificate(url, destination) {    
+    async loadCertificate(url, destination) {
         const writeStream = fs.createWriteStream(destination)
         return new Promise<string>((resolve, reject) => {
             https.get(url, (res) => {
@@ -48,19 +60,48 @@ export class Certificates {
 
         const secretDir: string = `${tmpDir}/keys`
 
+        if (!this.options.passTypeIdentifier) {
+            console.log("There is no passTypeIdentifier.")
+            return
+        }
+
         /// load secret
         if (!this.isExistFile(this.secret)) {
-            const identifier = this.options.passTypeIdentifier.replace(/^pass./, "")
-            const destination = path.resolve(secretDir, `${identifier}.pem`)
-            const tempLocalDir = path.dirname(destination)
-            await mkdirp(tempLocalDir)
-            this.secret = await this.loadCertificate(this.options.secretURL, destination)
+            const identifier: string = this.options.passTypeIdentifier.replace(/^pass./, "")
+            if (this.options.delegate) {
+                try {
+                    this.secret = await this.options.delegate.loadSecret(identifier)
+                } catch(error) {
+                    throw error
+                }                
+            } else {
+                const destination = path.resolve(secretDir, `${identifier}.pem`)
+                const tempLocalDir = path.dirname(destination)
+                await mkdirp(tempLocalDir)
+                try {
+                    this.secret = await this.loadCertificate(this.options.secretURL, destination)
+                } catch(error) {
+                    throw error
+                }                
+            }
         }
 
         /// load wwdr
         if (!this.isExistFile(this.wwdr)) {
-            const destination = path.resolve(secretDir, `wwdr.pem`)
-            this.wwdr = await this.loadCertificate(this.options.wwdrURL, destination)
+            if (this.options.delegate) {
+                try {
+                    this.wwdr = await this.options.delegate.loadWWDR()
+                } catch(error) {
+                    throw error
+                }                
+            } else {
+                const destination = path.resolve(secretDir, `wwdr.pem`)
+                try {
+                    this.wwdr = await this.loadCertificate(this.options.wwdrURL, destination)
+                } catch(error) {
+                    throw error
+                }                
+            }
         }
     }
 
@@ -78,7 +119,7 @@ export class Certificates {
 export let certtificates: Certificates
 
 /// PassKit initialize
-export function initialize(options?: Options) {
+export const initialize = (options?: Options) => {
     certtificates = new Certificates(options)
 }
 
@@ -268,7 +309,11 @@ export const generate = async (template: Template, assets: Assets) => {
     archive.append(manifestBuffer, { name: 'manifest.json' })
 
     // Add signature
-    const signature = await manifest.sign(template.passTypeIdentifier, manifestBuffer)
-    archive.append(signature, { name: "signature" })
-    return await archive.finalize()
+    try {
+        const signature = await manifest.sign(template.passTypeIdentifier, manifestBuffer)
+        archive.append(signature, { name: "signature" })
+        return await archive.finalize()
+    } catch (error) {
+        throw error
+    }
 }

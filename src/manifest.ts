@@ -16,8 +16,12 @@ export default class Manifest {
     }
 
     async sign(passTypeIdentifier: string, manifestBuffer) {
-
-        await certtificates.loadIfNeeded()
+        
+        try {
+            await certtificates.loadIfNeeded()
+        } catch(error) {
+            throw error
+        }
 
         const args = [
             "smime",

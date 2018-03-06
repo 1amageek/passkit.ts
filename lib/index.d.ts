@@ -2,12 +2,17 @@ import EventTicket from './eventTicket';
 import Assets from './assets';
 import Template from './template';
 export { Assets, EventTicket };
+export interface CertificateLodingDelegate {
+    loadSecret(identifier: string): Promise<string>;
+    loadWWDR(): Promise<string>;
+}
 export declare type Options = {
     passTypeIdentifier: string;
     teamIdentifier: string;
-    secretURL: string;
-    wwdrURL: string;
+    secretURL?: string;
+    wwdrURL?: string;
     password: string;
+    delegate?: CertificateLodingDelegate;
 };
 export declare class Certificates {
     secret?: string;
@@ -19,7 +24,7 @@ export declare class Certificates {
     isExistFile(file: string): boolean;
 }
 export declare let certtificates: Certificates;
-export declare function initialize(options?: Options): void;
+export declare const initialize: (options?: Options) => void;
 export declare enum TransitType {
     Air = "PKTransitTypeAir",
     Boat = "PKTransitTypeBoat",
