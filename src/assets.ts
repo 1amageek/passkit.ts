@@ -12,6 +12,12 @@ export default class Assets {
     thumbnail?: string
     thumbnail2x?: string
 
+    footer?: string
+    footer2x?: string
+
+    strip?: string
+    strip2x?: string
+
     validate() {
         const requireImages = ['logo', 'icon', 'logo2x', 'icon2x']
         for (const key of requireImages) {
