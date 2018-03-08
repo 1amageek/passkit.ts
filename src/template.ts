@@ -82,6 +82,8 @@ export default class Template {
     }
 
     validate() {
+
+        // Required keys
         const requireKeys = [
             'description',
             'formatVersion',
@@ -99,6 +101,13 @@ export default class Template {
                 if (this[key].length < 16) {
                     throw Error(`${key} must be 16 characters or longer.`)
                 }
+            }
+        }
+
+        // ATS
+        if (this['webServiceURL']) {
+            if (this['webServiceURL'].includes('http:')) {
+                throw Error(`webServiceURL must use https. ${this['webServiceURL']}`)
             }
         }
     }

@@ -53,7 +53,7 @@ describe("Manifest", () => {
             }
 
             const ticket: PassKit.EventTicket = new PassKit.EventTicket(pass, "Stamp", "desc", UUID.v4())
-            ticket.webServiceURL = "http://google.com"
+            ticket.webServiceURL = "https://google.com"
             ticket.barcode = barcode
             ticket.relevantDate = new Date()
             ticket.logoText = "参加チケット"
