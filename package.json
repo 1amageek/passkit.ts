@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "@1amageek/passkit",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "scripts": {
     "lint": "./node_modules/.bin/tslint -p tslint.json",
     "build": "./node_modules/.bin/tsc -d",
@@ -41,7 +41,7 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "@types/jest": "^22.1.4",
+    "@types/jest": "^22.2.0",
     "@types/node": "^9.4.6",
     "firebase-admin": "^5.9.1",
     "jest": "^22.4.2",
