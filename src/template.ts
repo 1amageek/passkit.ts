@@ -95,6 +95,11 @@ export default class Template {
             if (!this[key]) {
                 throw Error(`Missing ${key}, ${key} is required`)
             }
+            if (key === 'authenticationToken') {
+                if (this[key].length < 16) {
+                    throw Error(`${key} must be 16 characters or longer.`)
+                }
+            }
         }
     }
 
