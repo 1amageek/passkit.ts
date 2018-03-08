@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as https from 'https'
 import * as mkdirp from 'mkdirp-promise'
-import * as Archiver from 'archiver-promise'
+import * as Archiver from 'archiver'
 import EventTicket from './eventTicket'
 import Assets from './assets'
 import Template from './template'
@@ -133,9 +133,9 @@ export enum TransitType {
 
 /// Standard Field Dictionary
 export type Field = {
-    attributedValue: any
-    changeMessage: string
-    dataDetectorTypes: DataDetectorTypes[]
+    attributedValue?: any
+    changeMessage?: string
+    dataDetectorTypes?: DataDetectorTypes[]
     key: string
     label?: string
     textAlignment?: TextAlignment
@@ -235,8 +235,14 @@ export class RGB {
     g: number = 255
     b: number = 255
 
+    constructor(r: number, g: number, b: number) {
+        this.r = r
+        this.g = g
+        this.b = b
+    }
+
     getValue(): string {
-        return `rgb(${this.r},${this.g},${this.b}}`
+        return `rgb(${this.r}, ${this.g}, ${this.b})`
     }
 }
 
@@ -275,16 +281,17 @@ export const generate = async (template: Template, assets: Assets) => {
 
     const manifest: Manifest = new Manifest()
     const filePath: string = `/pass/${template.serialNumber}`
-    const tempLocalFile = path.join(tmpDir, `${filePath}/pass.zip`)
+    const tempLocalFile = path.join(tmpDir, `${filePath}/pass.pkpass`)
     const tempLocalDir = path.dirname(tempLocalFile)
     await mkdirp(tempLocalDir)
-
-    const archive = Archiver(tempLocalFile, { store: true })
+    const passWriteStream = fs.createWriteStream(tempLocalFile)
+    const archive = Archiver('zip', { store: true })
+    archive.pipe(passWriteStream)
     const buffer: Buffer = new Buffer(JSON.stringify(template.toPass()), 'utf-8')
 
     // Add pass.json
     const passName: string = 'pass.json'
-    await manifest.addFile(buffer, passName)
+    await manifest.addFile(buffer, passName, "utf8")
     archive.append(buffer, { name: passName })
 
     // Add images
@@ -294,8 +301,8 @@ export const generate = async (template: Template, assets: Assets) => {
         const destination: string = path.join(tempLocalDir, filename)
         try {
             const data = await loadImage(url, destination)
-            await manifest.addFile(data, filename)
             archive.append(data, { name: filename })
+            await manifest.addFile(data, filename, "utf8")
             fs.unlinkSync(destination)
         } catch (error) {
             console.log(error)
@@ -311,6 +318,7 @@ export const generate = async (template: Template, assets: Assets) => {
     try {
         const signature = await manifest.sign(template.passTypeIdentifier, manifestBuffer)
         archive.append(signature, { name: "signature" })
+
         await archive.finalize()
         return tempLocalFile
     } catch (error) {

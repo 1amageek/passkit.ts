@@ -35,7 +35,8 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "dependencies": {
-    "archiver-promise": "^1.0.0",
+    "archiver": "^2.1.1",
+    "dateformat": "^3.0.3",
     "mkdirp-promise": "^5.0.1",
     "uuid": "^3.2.1"
   },

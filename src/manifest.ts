@@ -6,9 +6,9 @@ export default class Manifest {
 
     data: { [key: string]: string } = {}
 
-    async addFile(buffer: Buffer, filename: string) {
-        const hash = Crypto.createHash('sha1')
-        this.data[filename] = hash.update(buffer).digest('hex')
+    async addFile(buffer: Buffer, filename: string, encoding: Crypto.Utf8AsciiLatin1Encoding) {
+        const hash: Crypto.Hash = Crypto.createHash('sha1')
+        this.data[filename] = hash.update(buffer, encoding).digest('hex')
     }
 
     toJSON(): { [key: string]: string } {
@@ -32,7 +32,7 @@ export default class Manifest {
         ]
 
         const promise = new Promise<Buffer>((resolve, reject) => {
-            const smime = Process.execFile('openssl', args, (error, stdout, stderr) => { 
+            const smime: Process.ChildProcess = Process.execFile('openssl', args, { encoding: "utf8" }, (error, stdout, stderr) => { 
                 if (error) {
                     reject(error)
                     return

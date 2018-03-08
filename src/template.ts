@@ -1,5 +1,5 @@
 import * as PassKit from './index'
-
+import * as Format from 'dateformat'
 
 /// Template
 export default class Template {
@@ -87,6 +87,8 @@ export default class Template {
             const value = this[key]
             if (value instanceof PassKit.RGB) {
                 pass[key] = (value as PassKit.RGB).getValue()
+            } else if (value instanceof Date) {
+                pass[key] = Format((value as Date), 'isoDateTime')
             } else {
                 pass[key] = value
             }    
