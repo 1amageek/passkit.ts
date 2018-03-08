@@ -73,12 +73,34 @@ export default class Template {
     nfc?: PassKit.NFC
 
     /// constructor
-    constructor(pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string) {
+    constructor(style: PassKit.Style, pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string) {
         this.passTypeIdentifier = PassKit.certtificates.options.passTypeIdentifier
         this.teamIdentifier = PassKit.certtificates.options.teamIdentifier
         this.organizationName = organizationName
         this.description = description
         this.serialNumber = serialNumber
+        switch (style) {
+            case PassKit.Style.boardingPass: {
+                this.boardingPass = pass
+                break
+            }
+            case PassKit.Style.coupon: {
+                this.coupon = pass
+                break
+            }
+            case PassKit.Style.eventTicket: {
+                this.eventTicket = pass
+                break
+            }
+            case PassKit.Style.generic: {
+                this.generic = pass
+                break
+            }
+            case PassKit.Style.storeCard: {
+                this.storeCard = pass
+                break
+            }
+        }
     }
 
     validate() {

@@ -1,7 +1,18 @@
-import EventTicket from './eventTicket';
 import Assets from './assets';
 import Template from './template';
-export { Assets, EventTicket };
+import BoardingPass from './boardingPass';
+import Coupon from './coupon';
+import EventTicket from './eventTicket';
+import Generic from './generic';
+import StoreCard from './storeCard';
+export { Assets, BoardingPass, Coupon, EventTicket, Generic, StoreCard };
+export declare enum Style {
+    boardingPass = "boardingPass",
+    coupon = "coupon",
+    eventTicket = "eventTicket",
+    generic = "generic",
+    storeCard = "storeCard",
+}
 export interface CertificateLodingDelegate {
     loadSecret(identifier: string): Promise<string>;
     loadWWDR(): Promise<string>;

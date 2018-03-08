@@ -58,7 +58,7 @@ describe("Manifest", () => {
             ticket.relevantDate = new Date()
             ticket.logoText = "参加チケット"
             ticket.description = "Passbookテスト用のチケットです。"
-            ticket.foregroundColor = new PassKit.RGB(255, 255, 255)
+            ticket.foregroundColor = new PassKit.RGB(16, 16, 16)
             ticket.backgroundColor = new PassKit.RGB(255, 255, 255)
             ticket.authenticationToken = "vxwxd7J8AlNNFPS8k0a0FfUFtq0ewzFdcs"
             try {

@@ -7,5 +7,9 @@ export default class Assets {
     background2x?: string;
     thumbnail?: string;
     thumbnail2x?: string;
+    footer?: string;
+    footer2x?: string;
+    strip?: string;
+    strip2x?: string;
     validate(): void;
 }

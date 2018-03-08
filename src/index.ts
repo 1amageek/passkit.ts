@@ -4,14 +4,26 @@ import * as os from 'os'
 import * as https from 'https'
 import * as mkdirp from 'mkdirp-promise'
 import * as Archiver from 'archiver'
-import EventTicket from './eventTicket'
 import Assets from './assets'
 import Template from './template'
 import Manifest from './manifest'
+import BoardingPass from './boardingPass'
+import Coupon from './coupon'
+import EventTicket from './eventTicket'
+import Generic from './generic'
+import StoreCard from './storeCard'
 
-export { Assets, EventTicket }
+export { Assets, BoardingPass, Coupon, EventTicket, Generic, StoreCard }
 
 const tmpDir: string = process.env.NODE_ENV === 'production' ? `${os.tmpdir()}/passkit` : `${process.cwd()}/temp`
+
+export enum Style {
+    boardingPass = "boardingPass",
+    coupon = "coupon",
+    eventTicket = "eventTicket",
+    generic = "generic",
+    storeCard = "storeCard"
+}
 
 export interface CertificateLodingDelegate {
     /// Load secret 

@@ -1,9 +1,9 @@
 import * as PassKit from './index'
 import Template from './template'
 
-export default class EventTicket extends Template {
+export default class Generic extends Template {
 
     constructor(pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string) {
-        super(PassKit.Style.eventTicket, pass, organizationName, description, serialNumber)
+        super(PassKit.Style.generic, pass, organizationName, description, serialNumber)
     }
 }
