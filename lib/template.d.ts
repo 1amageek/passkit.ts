@@ -33,6 +33,7 @@ export default class Template {
     webServiceURL?: string;
     nfc?: PassKit.NFC;
     constructor(pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string);
+    validate(): void;
     toPass(): {
         [key: string]: any;
     };

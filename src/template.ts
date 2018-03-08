@@ -81,18 +81,38 @@ export default class Template {
         this.serialNumber = serialNumber
     }
 
+    validate() {
+        const requireKeys = [
+            'description',
+            'formatVersion',
+            'organizationName',
+            'passTypeIdentifier',
+            'serialNumber',
+            'teamIdentifier',
+            'authenticationToken',
+        ]
+        for (const key of requireKeys) {
+            if (!this[key]) {
+                throw Error(`Missing ${key}, ${key} is required`)
+            }
+        }
+    }
+
     toPass(): { [key: string]: any } {
+
+        this.validate()
+
         const pass: { [key: string]: any } = {}
-        for (const key in this) {  
+        for (const key in this) {
             const value = this[key]
             if (value instanceof PassKit.RGB) {
                 pass[key] = (value as PassKit.RGB).getValue()
             } else if (value instanceof Date) {
-                pass[key] = Format((value as Date), 'isoDateTime')
+                pass[key] = Format((value as Date), 'isoUtcDateTime')
             } else {
                 pass[key] = value
-            }    
+            }
         }
-        return pass    
+        return pass
     }
 }

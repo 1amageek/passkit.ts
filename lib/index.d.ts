@@ -33,9 +33,9 @@ export declare enum TransitType {
     Train = "PKTransitTypeTrain",
 }
 export declare type Field = {
-    attributedValue: any;
-    changeMessage: string;
-    dataDetectorTypes: DataDetectorTypes[];
+    attributedValue?: any;
+    changeMessage?: string;
+    dataDetectorTypes?: DataDetectorTypes[];
     key: string;
     label?: string;
     textAlignment?: TextAlignment;
@@ -104,6 +104,7 @@ export declare class RGB {
     r: number;
     g: number;
     b: number;
+    constructor(r: number, g: number, b: number);
     getValue(): string;
 }
 export declare enum DataDetectorTypes {
