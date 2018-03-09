@@ -82,18 +82,18 @@ export class Certificates {
             if (this.options.delegate) {
                 try {
                     this.secret = await this.options.delegate.loadSecret(identifier)
-                } catch(error) {
+                } catch (error) {
                     throw error
-                }                
+                }
             } else {
                 const destination = path.resolve(secretDir, `${identifier}.pem`)
                 const tempLocalDir = path.dirname(destination)
                 await mkdirp(tempLocalDir)
                 try {
                     this.secret = await this.loadCertificate(this.options.secretURL, destination)
-                } catch(error) {
+                } catch (error) {
                     throw error
-                }                
+                }
             }
         }
 
@@ -102,16 +102,16 @@ export class Certificates {
             if (this.options.delegate) {
                 try {
                     this.wwdr = await this.options.delegate.loadWWDR()
-                } catch(error) {
+                } catch (error) {
                     throw error
-                }                
+                }
             } else {
                 const destination = path.resolve(secretDir, `wwdr.pem`)
                 try {
                     this.wwdr = await this.loadCertificate(this.options.wwdrURL, destination)
-                } catch(error) {
+                } catch (error) {
                     throw error
-                }                
+                }
             }
         }
     }
@@ -280,10 +280,21 @@ const loadImage = async (url, destination) => {
         https.get(url, (res) => {
             res.pipe(writeStream)
         })
-            .on('close', () => {
-                const data: Buffer = fs.readFileSync(destination)
+            .on('close', async () => {
+                const data: Buffer = await streamToBuffer(fs.createReadStream(destination))
                 resolve(data)
             })
+    })
+}
+
+const streamToBuffer = async stream => {
+    return new Promise<Buffer>((resolve, reject) => {
+        let buffers = []
+        stream.on('error', reject)
+        stream.on('data', (data) => buffers.push(data))
+        stream.on('end', () => {
+            resolve(Buffer.concat(buffers))
+        })
     })
 }
 
