@@ -289,7 +289,7 @@ const loadImage = async (url, destination) => {
 
 const streamToBuffer = async stream => {
     return new Promise<Buffer>((resolve, reject) => {
-        let buffers = []
+        const buffers = []
         stream.on('error', reject)
         stream.on('data', (data) => buffers.push(data))
         stream.on('end', () => {
