@@ -67,3 +67,8 @@ try {
     console.log(error)
 }
 ```
+
+
+__Donation__
+
+<img src="https://github.com/1amageek/passkit.ts/blob/master/kyash.jpg" width="200">
