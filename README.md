@@ -53,7 +53,7 @@ const barcode: PassKit.Barcode = {
 }
 
 const ticket: PassKit.EventTicket = new PassKit.EventTicket(pass, "Organization", "Description", "UUID_string")
-ticket.webServiceURL = "http://google.com"
+ticket.webServiceURL = "https://google.com"
 ticket.barcode = barcode
 ticket.relevantDate = new Date()
 ticket.logoText = "logo_string"
@@ -67,3 +67,8 @@ try {
     console.log(error)
 }
 ```
+
+
+__Donation__
+
+<img src="https://github.com/1amageek/passkit.ts/blob/master/kyash.jpg" width="200">
