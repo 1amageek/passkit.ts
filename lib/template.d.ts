@@ -29,6 +29,7 @@ export default class Template {
     groupingIdentifier?: string;
     labelColor?: PassKit.RGB;
     logoText?: string;
+    suppressStripShine?: boolean;
     authenticationToken?: string;
     webServiceURL?: string;
     nfc?: PassKit.NFC;

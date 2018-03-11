@@ -65,6 +65,8 @@ export default class Template {
 
     logoText?: string
 
+    suppressStripShine?: boolean
+
     // Web Service Keys
     authenticationToken?: string
 

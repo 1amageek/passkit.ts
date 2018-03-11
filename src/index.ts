@@ -274,6 +274,17 @@ export enum TextAlignment {
     Natural = "PKTextAlignmentNatural"
 }
 
+const streamToBuffer = async stream => {
+    return new Promise<Buffer>((resolve, reject) => {
+        const buffers = []
+        stream.on('error', reject)
+        stream.on('data', (data) => buffers.push(data))
+        stream.on('end', () => {
+            resolve(Buffer.concat(buffers))
+        })
+    })
+}
+
 const loadImage = async (url, destination) => {
     const writeStream = fs.createWriteStream(destination)
     return new Promise<Buffer>((resolve, reject) => {
@@ -284,17 +295,6 @@ const loadImage = async (url, destination) => {
                 const data: Buffer = await streamToBuffer(fs.createReadStream(destination))
                 resolve(data)
             })
-    })
-}
-
-const streamToBuffer = async stream => {
-    return new Promise<Buffer>((resolve, reject) => {
-        const buffers = []
-        stream.on('error', reject)
-        stream.on('data', (data) => buffers.push(data))
-        stream.on('end', () => {
-            resolve(Buffer.concat(buffers))
-        })
     })
 }
 
