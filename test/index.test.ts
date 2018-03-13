@@ -20,30 +20,30 @@ describe("Manifest", () => {
             // assets.thumbnail2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/thumbnail%402x.png?alt=media&token=6a8b323c-24cc-4380-b4c5-d176ea67e28b"
 
             const pass: PassKit.Pass = {}
+            pass.headerFields = []
+            // pass.primaryFields = [
+            //     {
+            //         "key": "event",
+            //         "label": "イベント",
+            //         "value": "Passbookテスト"
+            //     }
+            // ]
 
-            pass.primaryFields = [
-                {
-                    "key": "event",
-                    "label": "イベント",
-                    "value": "Passbookテスト"
-                }
-            ]
+            // pass.secondaryFields = [
+            //     {
+            //         "key": "loc",
+            //         "label": "場所",
+            //         "value": "東京近辺"
+            //     }
+            // ]
 
-            pass.secondaryFields = [
-                {
-                    "key": "loc",
-                    "label": "場所",
-                    "value": "東京近辺"
-                }
-            ]
-
-            pass.backFields = [
-                {
-                    "key": "message",
-                    "label": "メッセージ",
-                    "value": "Passbook盛り上げていきましょう！"
-                }
-            ]
+            // pass.backFields = [
+            //     {
+            //         "key": "message",
+            //         "label": "メッセージ",
+            //         "value": "Passbook盛り上げていきましょう！"
+            //     }
+            // ]
 
             const barcode: PassKit.Barcode = {
                 altText: "ユーザID",
