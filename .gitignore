@@ -59,6 +59,7 @@ typings/
 # dotenv environment variables file
 .env
 
+lib/
 keys/
 test/
 temp/

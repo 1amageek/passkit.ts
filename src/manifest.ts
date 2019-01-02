@@ -8,14 +8,14 @@ export default class Manifest {
 
     async addFile(buffer: Buffer, filename: string, encoding: Crypto.Utf8AsciiLatin1Encoding) {
         const hash: Crypto.Hash = Crypto.createHash('sha1')
-        this.data[filename] = hash.update(buffer, encoding).digest('hex')
+        this.data[filename] = hash.update(buffer).digest('hex')
     }
 
     toJSON(): { [key: string]: string } {
         return this.data
     }
 
-    async sign(passTypeIdentifier: string, manifestBuffer) {
+    async sign(passTypeIdentifier: string, manifestBuffer: Buffer) {
         
         try {
             await certtificates.loadIfNeeded()

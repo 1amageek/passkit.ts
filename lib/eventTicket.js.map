@@ -1,1 +1,0 @@
-{"version":3,"file":"eventTicket.js","sourceRoot":"","sources":["../src/eventTicket.ts"],"names":[],"mappings":";;AAAA,mCAAkC;AAClC,yCAAiC;AAEjC,iBAAiC,SAAQ,kBAAQ;IAE7C,YAAY,IAAkB,EAAE,gBAAwB,EAAE,WAAmB,EAAE,YAAoB;QAC/F,KAAK,CAAC,OAAO,CAAC,KAAK,CAAC,WAAW,EAAE,IAAI,EAAE,gBAAgB,EAAE,WAAW,EAAE,YAAY,CAAC,CAAA;IACvF,CAAC;CACJ;AALD,8BAKC"}

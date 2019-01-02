@@ -1,9 +1,5 @@
 # passkit.ts
 
-**passkit.ts** is a Pass issuing library created with TypeScript.
-
-[Apple Wallet Developer Guide](https://developer.apple.com/library/content/documentation/UserExperience/Conceptual/PassKit_PG/index.html)
-
 # Installation
 
 ```shell

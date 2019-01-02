@@ -4,6 +4,7 @@
   "version": "0.1.8",
   "scripts": {
     "lint": "./node_modules/.bin/tslint -p tslint.json",
+    "prepare": "npm run build",
     "build": "./node_modules/.bin/tsc -d",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase experimental:functions:shell",
@@ -38,16 +39,17 @@
     "archiver": "^2.1.1",
     "dateformat": "^3.0.3",
     "mkdirp-promise": "^5.0.1",
-    "uuid": "^3.2.1"
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@types/jest": "^22.2.0",
-    "@types/node": "^9.4.6",
+    "@types/uuid": "^3.4.4",
+    "@types/jest": "^23.3.9",
+    "@types/node": "^10.12.10",
     "firebase-admin": "^5.9.1",
-    "jest": "^22.4.2",
-    "ts-jest": "^22.4.1",
-    "tslint": "^5.8.0",
-    "typescript": "^2.5.3"
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.2",
+    "tslint": "^5.11.0",
+    "typescript": "^3.2.2"
   },
   "jest": {
     "transform": {
