@@ -310,7 +310,7 @@ export const generate = async (template: Template, assets: Assets) => {
     const passWriteStream = fs.createWriteStream(tempLocalFile)
     const archive = Archiver('zip', { store: true })
     archive.pipe(passWriteStream)
-    const buffer: Buffer = new Buffer(JSON.stringify(template.toPass()), 'utf-8')
+    const buffer: Buffer = Buffer.from(JSON.stringify(template.toPass()), 'utf-8')
 
     // Add pass.json
     const passName: string = 'pass.json'
@@ -334,7 +334,7 @@ export const generate = async (template: Template, assets: Assets) => {
     }
 
     // Add manifest
-    const manifestBuffer = new Buffer(JSON.stringify(manifest.toJSON()), 'utf-8')
+    const manifestBuffer = Buffer.from(JSON.stringify(manifest.toJSON()), 'utf-8')
     archive.append(manifestBuffer, { name: 'manifest.json' })
 
     // Add signature

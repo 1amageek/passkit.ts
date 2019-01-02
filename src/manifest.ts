@@ -42,7 +42,7 @@ export default class Manifest {
                     return
                 }
                 const signature = stdout.split(/\n\n/)[3]
-                resolve(new Buffer(signature, 'base64'))
+                resolve(Buffer.from(signature, 'base64'))
             })
             smime.stdin.write(manifestBuffer)
             smime.stdin.end()

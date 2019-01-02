@@ -21,7 +21,7 @@ describe("Manifest", () => {
                 {
                     "key": "event",
                     "label": "イベント",
-                    "value": "Passbookテスト"
+                    "value": "StoreCard"
                 }
             ]
 
@@ -42,79 +42,82 @@ describe("Manifest", () => {
             storeCard.foregroundColor = new PassKit.RGB(16, 16, 16)
             storeCard.backgroundColor = new PassKit.RGB(255, 255, 255)
             storeCard.authenticationToken = "vxwxd7J8AlNNFPS8k0a0FfUFtq0ewzFdcs"
-            storeCard.nfc =  {
-                message: "gggggggggggg"
-            }
+            // storeCard.nfc =  {
+            //     message: "gggggggggggg"
+            // }
 
             try {
                 const path = await PassKit.generate(storeCard, assets)
+                test("destination", () => {
+                    expect(path).not.toBeNull()
+                })
                 console.log(path)
             } catch (error) {
                 console.log(error)
             }
         })
 
-        test("Ticket", async () => {
-            const assets = new PassKit.Assets()
-            // assets.background = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/background.png?alt=media&token=b6dd5d3d-263c-42cb-8a3a-75bf9f7c4cdb"
-            // assets.background2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/background%402x.png?alt=media&token=481c1846-f45c-4147-927f-99b73cc9eab0"
-            assets.icon = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
-            assets.icon2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
-            assets.logo = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
-            assets.logo2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
-            // assets.thumbnail = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/thumbnail.png?alt=media&token=f8e97ab2-481f-46ac-b996-c6519098c625"
-            // assets.thumbnail2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/thumbnail%402x.png?alt=media&token=6a8b323c-24cc-4380-b4c5-d176ea67e28b"
+        // test("Ticket", async () => {
+        //     const assets = new PassKit.Assets()
+        //     // assets.background = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/background.png?alt=media&token=b6dd5d3d-263c-42cb-8a3a-75bf9f7c4cdb"
+        //     // assets.background2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/background%402x.png?alt=media&token=481c1846-f45c-4147-927f-99b73cc9eab0"
+        //     assets.icon = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
+        //     assets.icon2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
+        //     assets.logo = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
+        //     assets.logo2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
+        //     // assets.thumbnail = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/thumbnail.png?alt=media&token=f8e97ab2-481f-46ac-b996-c6519098c625"
+        //     // assets.thumbnail2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/thumbnail%402x.png?alt=media&token=6a8b323c-24cc-4380-b4c5-d176ea67e28b"
 
-            const pass: PassKit.Pass = {}
-            pass.headerFields = []
-            pass.primaryFields = [
-                {
-                    "key": "event",
-                    "label": "イベント",
-                    "value": "Passbookテスト"
-                }
-            ]
+        //     const pass: PassKit.Pass = {}
+        //     pass.headerFields = []
+        //     pass.primaryFields = [
+        //         {
+        //             "key": "event",
+        //             "label": "イベント",
+        //             "value": "Ticketのテスト"
+        //         }
+        //     ]
 
-            pass.secondaryFields = [
-                {
-                    "key": "loc",
-                    "label": "場所",
-                    "value": "東京近辺"
-                }
-            ]
+        //     pass.secondaryFields = [
+        //         {
+        //             "key": "loc",
+        //             "label": "場所",
+        //             "value": "東京近辺"
+        //         }
+        //     ]
 
-            // pass.backFields = [
-            //     {
-            //         "key": "message",
-            //         "label": "メッセージ",
-            //         "value": "Passbook盛り上げていきましょう！"
-            //     }
-            // ]
+        //     // pass.backFields = [
+        //     //     {
+        //     //         "key": "message",
+        //     //         "label": "メッセージ",
+        //     //         "value": "Passbook盛り上げていきましょう！"
+        //     //     }
+        //     // ]
 
-            const barcode: PassKit.Barcode = {
-                altText: "ユーザID",
-                format: PassKit.BarcodeFormat.QR,
-                message: "http://google.com",
-                messageEncoding: "iso-8859-1"
-            }
+        //     const barcode: PassKit.Barcode = {
+        //         altText: "ユーザID",
+        //         format: PassKit.BarcodeFormat.QR,
+        //         message: "http://google.com",
+        //         messageEncoding: "iso-8859-1"
+        //     }
 
-            const ticket: PassKit.EventTicket = new PassKit.EventTicket(pass, "Stamp", "desc", UUID.v4())
-            ticket.webServiceURL = "https://google.com"
-            ticket.barcode = barcode
-            ticket.relevantDate = new Date()
-            ticket.logoText = "参加チケット"
-            ticket.description = "Passbookテスト用のチケットです。"
-            ticket.labelColor = new PassKit.RGB(16, 16, 16)
-            ticket.foregroundColor = new PassKit.RGB(16, 16, 16)
-            ticket.backgroundColor = new PassKit.RGB(255, 255, 255)
-            ticket.authenticationToken = "vxwxd7J8AlNNFPS8k0a0FfUFtq0ewzFdcs"
+        //     const ticket: PassKit.EventTicket = new PassKit.EventTicket(pass, "Stamp", "desc", UUID.v4())
+        //     ticket.webServiceURL = "https://google.com"
+        //     ticket.barcode = barcode
+        //     ticket.relevantDate = new Date()
+        //     ticket.logoText = "参加チケット"
+        //     ticket.description = "Passbookテスト用のチケットです。"
+        //     ticket.labelColor = new PassKit.RGB(16, 16, 16)
+        //     ticket.foregroundColor = new PassKit.RGB(16, 16, 16)
+        //     ticket.backgroundColor = new PassKit.RGB(255, 255, 255)
+        //     ticket.authenticationToken = "vxwxd7J8AlNNFPS8k0a0FfUFtq0ewzFdcs"
 
-            try {
-                const path = await PassKit.generate(ticket, assets)
-                console.log(path)
-            } catch (error) {
-                console.log(error)
-            }
-        }, 16000)
+        //     try {
+        //         const path = await PassKit.generate(ticket, assets)
+        //         console.log(path)
+        //     } catch (error) {
+        //         console.log(error)
+        //     }
+        // }, 16000)
     })
 })
