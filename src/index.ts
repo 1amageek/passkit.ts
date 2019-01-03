@@ -37,12 +37,24 @@ export interface CertificateLodingDelegate {
 }
 
 export type Options = {
+    /// Specify the path where secret is placed.
+    secret?: string
+
+    /// Specify the path where wwdr is placed.
+    wwdr?: string
+
+    /// If the specified path does not exist, the secret file is read from the specified URL.
+    secretURL?: string
+
+    /// If the specified path does not exist, the wwdr file is read from the specified URL.
+    wwdrURL?: string
+
+    /// By specifying a delegate, you can customize the way the file is read.
+    delegate?: CertificateLodingDelegate
+
     passTypeIdentifier: string
     teamIdentifier: string
-    secretURL?: string
-    wwdrURL?: string
     password: string
-    delegate?: CertificateLodingDelegate
 }
 
 export class Certificates {
@@ -54,6 +66,8 @@ export class Certificates {
 
     constructor(options: Options) {
         this.options = options
+        this.secret = options.secret
+        this.wwdr = options.wwdr
     }
 
     async loadCertificate(url: string, destination: string) {
