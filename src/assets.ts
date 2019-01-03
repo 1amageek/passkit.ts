@@ -27,6 +27,10 @@ export default class Assets {
     strip?: string
     strip2x?: string
 
+    // 150×40
+    personalizationLogo?: string
+    personalizationLogo2x?: string
+
     validate() {
         const requireImages = ['logo', 'icon', 'logo2x', 'icon2x']
         for (const key of requireImages) {

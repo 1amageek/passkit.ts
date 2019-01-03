@@ -14,7 +14,8 @@ describe("Manifest", () => {
             assets.icon2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
             assets.logo = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
             assets.logo2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
-
+            assets.personalizationLogo = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/personalizationLogo.png?alt=media&token=ea39f213-c0ef-4173-b3b0-0b26ad4418a2"
+            assets.personalizationLogo2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/personalizationLogo%402x.png?alt=media&token=d262355f-c592-47e1-a7e0-36dab7158968"
             const pass: PassKit.Pass = {}
             pass.headerFields = []
             pass.primaryFields = [
@@ -33,7 +34,7 @@ describe("Manifest", () => {
             }
 
             const storeCard: PassKit.StoreCard = new PassKit.StoreCard(pass, "Stamp", "desc", UUID.v4())
-            storeCard.webServiceURL = "https://google.com"
+            storeCard.webServiceURL = "https://ticket-392a5.firebaseapp.com/_"
             storeCard.barcode = barcode
             storeCard.relevantDate = new Date()
             storeCard.logoText = "参加チケット"
@@ -46,8 +47,13 @@ describe("Manifest", () => {
             //     message: "gggggggggggg"
             // }
 
+            const personalization: PassKit.Personalization = {
+                requiredPersonalizationFields: [PassKit.PersonalizationField.Name],
+                description: "ポイントカード"
+            }
+
             try {
-                const path = await PassKit.generate(storeCard, assets)
+                const path = await PassKit.generate(storeCard, assets, personalization)
                 test("destination", () => {
                     expect(path).not.toBeNull()
                 })

@@ -12,6 +12,7 @@ import Coupon from './coupon'
 import EventTicket from './eventTicket'
 import Generic from './generic'
 import StoreCard from './storeCard'
+import { Stream } from 'stream'
 
 export { Assets, BoardingPass, Coupon, EventTicket, Generic, StoreCard }
 
@@ -55,7 +56,7 @@ export class Certificates {
         this.options = options
     }
 
-    async loadCertificate(url, destination) {
+    async loadCertificate(url: string, destination: string) {
         const writeStream = fs.createWriteStream(destination)
         return new Promise<string>((resolve, reject) => {
             https.get(url, (res) => {
@@ -258,6 +259,28 @@ export class RGB {
     }
 }
 
+/// Barcode format
+export enum PersonalizationField {
+    Name = "PKPassPersonalizationFieldName",
+    PostalCode = "PKPassPersonalizationFieldPostalCode",
+    Address = "PKPassPersonalizationFieldEmailAddress",
+    PhoneNumber = "PKPassPersonalizationFieldPhoneNumber"
+}
+
+/// Personalization
+export type Personalization = {
+
+    /// Required. The contents of this array define the data requested from the user. The signup form’s fields are generated based on these keys.
+    requiredPersonalizationFields: PersonalizationField[]
+
+    /// Required. A brief description of the program. This is displayed on the signup sheet, under the personalization logo.
+    description: string
+
+    /// Optional. A description of the program’s terms and conditions. This string can contain HTML link tags to external content.
+    /// If present, this information is displayed after the user enters their personal information and taps the Next button. The user then has the option to agree to the terms, or to cancel out of the signup process.
+    termsAndConditions?: string
+}
+
 /// DataDetectorTypes
 export enum DataDetectorTypes {
     PhoneNumber = "PKDataDetectorTypePhoneNumber",
@@ -274,7 +297,7 @@ export enum TextAlignment {
     Natural = "PKTextAlignmentNatural"
 }
 
-const streamToBuffer = async stream => {
+const streamToBuffer = async (stream: Stream) => {
     return new Promise<Buffer>((resolve, reject) => {
         const buffers = []
         stream.on('error', reject)
@@ -285,7 +308,7 @@ const streamToBuffer = async stream => {
     })
 }
 
-const loadImage = async (url, destination) => {
+const loadImage = async (url: string, destination: string) => {
     const writeStream = fs.createWriteStream(destination)
     return new Promise<Buffer>((resolve, reject) => {
         https.get(url, (res) => {
@@ -298,7 +321,19 @@ const loadImage = async (url, destination) => {
     })
 }
 
-export const generate = async (template: Template, assets: Assets) => {
+const imageArchive = async (archive: Archiver, manifest: Manifest, filename: string, url: string, destination: string) => {
+    try {
+        const data = await loadImage(url, destination)
+        archive.append(data, { name: filename })
+        await manifest.addFile(data, filename, "utf8")
+        fs.unlinkSync(destination)
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}
+
+export const generate = async (template: Template, assets: Assets, personalization?: Personalization) => {
 
     assets.validate()
 
@@ -310,27 +345,36 @@ export const generate = async (template: Template, assets: Assets) => {
     const passWriteStream = fs.createWriteStream(tempLocalFile)
     const archive = Archiver('zip', { store: true })
     archive.pipe(passWriteStream)
-    const buffer: Buffer = Buffer.from(JSON.stringify(template.toPass()), 'utf-8')
+
+    // Add personalization.json
+    if (personalization) {
+        const personalizationName: string = 'personalization.json'
+        const personalizationBuffer: Buffer = Buffer.from(JSON.stringify(personalization), 'utf-8')
+        await manifest.addFile(personalizationBuffer, personalizationName, "utf8")
+        archive.append(personalizationBuffer, { name: personalizationName })
+    }
 
     // Add pass.json
     const passName: string = 'pass.json'
+    const buffer: Buffer = Buffer.from(JSON.stringify(template.toPass()), 'utf-8')
     await manifest.addFile(buffer, passName, "utf8")
     archive.append(buffer, { name: passName })
 
     // Add images
+    const tasks = []
     for (const key in assets) {
         const filename: string = `${key.replace('2x', '@2x')}.png`
         const url: string = assets[key]
         const destination: string = path.join(tempLocalDir, filename)
-        try {
-            const data = await loadImage(url, destination)
-            archive.append(data, { name: filename })
-            await manifest.addFile(data, filename, "utf8")
-            fs.unlinkSync(destination)
-        } catch (error) {
-            console.log(error)
-            throw error
-        }
+        const task = imageArchive(archive, manifest, filename, url, destination)
+        tasks.push(task)
+    }
+
+    try {
+        await Promise.all(tasks)
+    } catch (error) {
+        console.log(error)
+        throw error
     }
 
     // Add manifest
