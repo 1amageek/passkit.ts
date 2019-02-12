@@ -1,12 +1,14 @@
 # passkit.ts
 
-# Installation
+passkit.ts is a library for issuing pass with typescript.
+
+## Installation
 
 ```shell
 npm add @1amageek/passkit
 ```
 
-# Usage
+## Usage
 
 ```typescript
 
