@@ -76,8 +76,8 @@ export default class Template {
 
     /// constructor
     constructor(style: PassKit.Style, pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string) {
-        this.passTypeIdentifier = PassKit.certtificates.options.passTypeIdentifier
-        this.teamIdentifier = PassKit.certtificates.options.teamIdentifier
+        this.passTypeIdentifier = PassKit.certificates.options.passTypeIdentifier
+        this.teamIdentifier = PassKit.certificates.options.teamIdentifier
         this.organizationName = organizationName
         this.description = description
         this.serialNumber = serialNumber

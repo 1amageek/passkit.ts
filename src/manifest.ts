@@ -1,6 +1,8 @@
 import * as Crypto from 'crypto'
-import * as Process from 'child_process'
-import { certtificates } from './index'
+import * as forge from 'node-forge'
+import * as fs from 'fs'
+import * as path from 'path'
+import { certificates } from './index'
 
 export default class Manifest {
 
@@ -11,42 +13,88 @@ export default class Manifest {
         this.data[filename] = hash.update(buffer).digest('hex')
     }
 
-    toJSON(): { [key: string]: string } {
-        return this.data
+    toJSON(): string {
+        return JSON.stringify(this.data)
     }
 
-    async sign(passTypeIdentifier: string, manifestBuffer: Buffer) {
-        
-        try {
-            await certtificates.loadIfNeeded()
-        } catch(error) {
-            throw error
+    async sign() {
+
+        const wwdrPath = certificates.wwdr
+        const secretPath = certificates.secret
+
+        if (!wwdrPath) {
+            throw new Error('[Passkit] error: wwdr path not found')
         }
 
-        const args = [
-            "smime",
-            "-sign", "-binary",
-            "-signer", certtificates.secret,
-            "-certfile", certtificates.wwdr,
-            "-passin", "pass:" + certtificates.options.password
-        ]
+        if (!secretPath) {
+            throw new Error('[Passkit] error: secret path not found')
+        }
 
-        const promise = new Promise<Buffer>((resolve, reject) => {
-            const smime: Process.ChildProcess = Process.execFile('openssl', args, { encoding: "utf8" }, (error, stdout, stderr) => { 
-                if (error) {
-                    reject(error)
-                    return
-                }
-                if (stderr) {
-                    reject(new Error(stderr))
-                    return
-                }
-                const signature = stdout.split(/\n\n/)[3]
-                resolve(Buffer.from(signature, 'base64'))
-            })
-            smime.stdin.write(manifestBuffer)
-            smime.stdin.end()
+        const signerCertData: string = await fs.readFileSync(path.resolve(__dirname, secretPath), { encoding: 'utf8' })
+        const wwdrCertData: string = await fs.readFileSync(path.resolve(__dirname, wwdrPath), { encoding: 'utf8' })
+        const password: string = certificates.options.password
+        const certificate: forge.pki.Certificate = forge.pki.certificateFromPem(signerCertData)
+        const wwdr: forge.pki.Certificate = forge.pki.certificateFromPem(wwdrCertData)
+
+        // getting signer private key
+        const key = this._decodePrivateKey(signerCertData, password)
+
+        // create PKCS#7 signed data
+        const p7 = forge.pkcs7.createSignedData()
+        p7.content = this.toJSON()
+        p7.addCertificate(certificate)
+        p7.addCertificate(wwdr)
+        p7.addSigner({
+            key,
+            certificate,
+            digestAlgorithm: forge.pki.oids.sha1,
+            authenticatedAttributes: [
+                {
+                    type: forge.pki.oids.contentType,
+                    value: forge.pki.oids.data,
+                },
+                {
+                    type: forge.pki.oids.messageDigest,
+                    // value will be auto-populated at signing time
+                },
+                {
+                    type: forge.pki.oids.signingTime,
+                    // value will be auto-populated at signing time
+                    // value: new Date('2050-01-01T00:00:00Z')
+                },
+            ],
         })
-        return promise
+        p7.sign()
+        p7.contentInfo.value.pop()
+        return Buffer.from(forge.asn1.toDer(p7.toAsn1()).getBytes(), 'binary')
+    }
+
+    private _decodePrivateKey(keydata: string, password: string) {
+        const pemMessages = forge.pem.decode(keydata)
+
+        // getting signer private key
+        const signerKeyMessage = pemMessages.find(message =>
+            message.type.includes('KEY'),
+        )
+
+        if (!signerKeyMessage) {
+            throw new Error('[Passkit] error: Invalid certificate, no key found')
+        }
+
+        const key = forge.pki.decryptRsaPrivateKey(
+            forge.pem.encode(signerKeyMessage),
+            password,
+        )
+
+        if (!key) {
+            if (
+                (signerKeyMessage.procType && signerKeyMessage.procType.type === 'ENCRYPTED') ||
+                signerKeyMessage.type.includes('ENCRYPTED')
+            ) {
+                throw new Error('[Passkit] error: Unable to parse key, incorrect passphrase')
+            }
+        }
+
+        return forge.pki.privateKeyToPem(key)
     }
 }

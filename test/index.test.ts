@@ -4,11 +4,11 @@ import { options } from './config'
 
 PassKit.initialize(options)
 
-describe("Manifest", () => {
+describe("Manifest", async () => {
 
     describe("Passkit", async () => {
 
-        describe("StoreCard", async () => {
+        test("StoreCard", async () => {
             const assets = new PassKit.Assets()
             assets.icon = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
             assets.icon2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
@@ -54,12 +54,10 @@ describe("Manifest", () => {
 
             try {
                 const path = await PassKit.generate(storeCard, assets)
-                test("destination", () => {
-                    expect(path).not.toBeNull()
-                })
+                expect(path).not.toBeNull()
                 console.log(path)
             } catch (error) {
-                console.log(error)
+                console.error(error)
             }
         })
 

@@ -2,7 +2,8 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as https from 'https'
-import * as mkdirp from 'mkdirp-promise'
+import * as mkdirp from 'mkdirp'
+import * as request from 'request'
 import * as Archiver from 'archiver'
 import Assets from './assets'
 import Template from './template'
@@ -60,6 +61,7 @@ export type Options = {
 export class Certificates {
 
     secret?: string
+
     wwdr?: string
 
     options: Options
@@ -70,7 +72,7 @@ export class Certificates {
         this.wwdr = options.wwdr
     }
 
-    async loadCertificate(url: string, destination: string) {
+    async mountCertificate(url: string, destination: string) {
         const writeStream = fs.createWriteStream(destination)
         return new Promise<string>((resolve, reject) => {
             https.get(url, (res) => {
@@ -82,12 +84,12 @@ export class Certificates {
         })
     }
 
-    async loadIfNeeded() {
+    async mountIfNeeded() {
 
         const secretDir: string = `${tmpDir}/keys`
 
         if (!this.options.passTypeIdentifier) {
-            console.log("There is no passTypeIdentifier.")
+            console.error("[Passkit] error: passTypeIdentifier is required.")
             return
         }
 
@@ -103,9 +105,9 @@ export class Certificates {
             } else {
                 const destination = path.resolve(secretDir, `${identifier}.pem`)
                 const tempLocalDir = path.dirname(destination)
-                await mkdirp(tempLocalDir)
+                await mkdirp.sync(tempLocalDir)
                 try {
-                    this.secret = await this.loadCertificate(this.options.secretURL, destination)
+                    this.secret = await this.mountCertificate(this.options.secretURL, destination)
                 } catch (error) {
                     throw error
                 }
@@ -123,7 +125,7 @@ export class Certificates {
             } else {
                 const destination = path.resolve(secretDir, `wwdr.pem`)
                 try {
-                    this.wwdr = await this.loadCertificate(this.options.wwdrURL, destination)
+                    this.wwdr = await this.mountCertificate(this.options.wwdrURL, destination)
                 } catch (error) {
                     throw error
                 }
@@ -142,11 +144,11 @@ export class Certificates {
 }
 
 /// Certificates
-export let certtificates: Certificates
+export let certificates: Certificates
 
 /// PassKit initialize
 export const initialize = (options?: Options) => {
-    certtificates = new Certificates(options)
+    certificates = new Certificates(options)
 }
 
 /// TransitType
@@ -322,29 +324,41 @@ const streamToBuffer = async (stream: Stream) => {
     })
 }
 
-const loadImage = async (url: string, destination: string) => {
-    const writeStream = fs.createWriteStream(destination)
+const loadImage = async (url: string) => {
     return new Promise<Buffer>((resolve, reject) => {
-        https.get(url, (res) => {
-            res.pipe(writeStream)
+        request.get(url, { encoding: null }, async (error, res, body) => {
+            if (error) {
+                reject(error)
+            } else {
+                if (res.statusCode === 200) {
+                    resolve(body)
+                } else {
+                    reject(new Error(`[Passkit] error: ${url} not found.`))
+                }
+            }
         })
-            .on('close', async () => {
-                const data: Buffer = await streamToBuffer(fs.createReadStream(destination))
-                resolve(data)
-            })
     })
 }
 
-const imageArchive = async (archive: Archiver, manifest: Manifest, filename: string, url: string, destination: string) => {
-    try {
-        const data = await loadImage(url, destination)
-        archive.append(data, { name: filename })
-        await manifest.addFile(data, filename, "utf8")
-        fs.unlinkSync(destination)
-    } catch (error) {
-        console.log(error)
-        throw error
+const imageArchive = async (archive: Archiver.Archiver, manifest: Manifest, filename: string, url: string) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const data = await loadImage(url)
+            archive.append(data, { name: filename })
+            manifest.addFile(data, filename, "utf8")
+            resolve()
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+const cleanup = async (targetPath: string) => {
+    const files = fs.readdirSync(targetPath)
+    for (const file in files) {
+        fs.unlinkSync(path.resolve(targetPath, files[file]))
     }
+    fs.rmdirSync(targetPath)
 }
 
 export const generate = async (template: Template, assets: Assets, personalization?: Personalization) => {
@@ -355,9 +369,9 @@ export const generate = async (template: Template, assets: Assets, personalizati
     const filePath: string = `/pass/${template.serialNumber}`
     const tempLocalFile = path.join(tmpDir, `${filePath}/pass.pkpass`)
     const tempLocalDir = path.dirname(tempLocalFile)
-    await mkdirp(tempLocalDir)
+    await mkdirp.sync(tempLocalDir)
     const passWriteStream = fs.createWriteStream(tempLocalFile)
-    const archive = Archiver('zip', { store: true })
+    const archive = Archiver.create('zip', { store: true })
     archive.pipe(passWriteStream)
 
     // Add personalization.json
@@ -379,30 +393,30 @@ export const generate = async (template: Template, assets: Assets, personalizati
     for (const key in assets) {
         const filename: string = `${key.replace('2x', '@2x')}.png`
         const url: string = assets[key]
-        const destination: string = path.join(tempLocalDir, filename)
-        const task = imageArchive(archive, manifest, filename, url, destination)
+        const task = imageArchive(archive, manifest, filename, url)
         tasks.push(task)
     }
 
     try {
         await Promise.all(tasks)
     } catch (error) {
-        console.log(error)
+        archive.abort()
+        cleanup(tempLocalDir)
         throw error
     }
 
     // Add manifest
-    const manifestBuffer = Buffer.from(JSON.stringify(manifest.toJSON()), 'utf-8')
-    archive.append(manifestBuffer, { name: 'manifest.json' })
+    const manifestJSON = manifest.toJSON()
+    archive.append(manifestJSON, { name: 'manifest.json' })
 
     // Add signature
     try {
-        const signature = await manifest.sign(template.passTypeIdentifier, manifestBuffer)
+        const signature = await manifest.sign()
         archive.append(signature, { name: "signature" })
-
-        await archive.finalize()
+        archive.finalize()
         return tempLocalFile
     } catch (error) {
+        archive.abort()
         throw error
     }
 }
