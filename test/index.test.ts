@@ -4,9 +4,60 @@ import { options } from './config'
 
 PassKit.initialize(options)
 
-describe("Manifest", async () => {
+describe("Manifest", () => {
 
-    describe("Passkit", async () => {
+    describe("Passkit", () => {
+
+        test("Generate by data assets", async () => {
+            const assets = new PassKit.Assets()
+            assets.icon = process.cwd() + "/assets/icon.png"
+            assets.icon2x = "./assets/icon@2x.png"
+            assets.logo = "./assets/logo.png"
+            assets.logo2x = "./assets/logo@2x.png"
+            const pass: PassKit.Pass = {}
+            pass.headerFields = []
+            pass.primaryFields = [
+                {
+                    "key": "event",
+                    "label": "イベント",
+                    "value": "StoreCard"
+                }
+            ]
+
+            const barcode: PassKit.Barcode = {
+                altText: "ユーザID",
+                format: PassKit.BarcodeFormat.QR,
+                message: "http://google.com",
+                messageEncoding: "iso-8859-1"
+            }
+
+            const storeCard: PassKit.StoreCard = new PassKit.StoreCard(pass, "Stamp", "desc", UUID.v4())
+            storeCard.webServiceURL = "https://ticket-392a5.firebaseapp.com/_"
+            storeCard.barcode = barcode
+            storeCard.relevantDate = new Date()
+            storeCard.logoText = "参加チケット"
+            storeCard.description = "Passbookテスト用のチケットです。"
+            storeCard.labelColor = new PassKit.RGB(16, 16, 16)
+            storeCard.foregroundColor = new PassKit.RGB(16, 16, 16)
+            storeCard.backgroundColor = new PassKit.RGB(255, 255, 255)
+            storeCard.authenticationToken = "vxwxd7J8AlNNFPS8k0a0FfUFtq0ewzFdcs"
+            // storeCard.nfc =  {
+            //     message: "gggggggggggg"
+            // }
+
+            // const personalization: PassKit.Personalization = {
+            //     requiredPersonalizationFields: [PassKit.PersonalizationField.Name],
+            //     description: "ポイントカード"
+            // }
+
+            try {
+                const path = await PassKit.generate(storeCard, assets)
+                expect(path).not.toBeNull()
+                console.log(path)
+            } catch (error) {
+                console.error(error)
+            }
+        })
 
         test("StoreCard", async () => {
             const assets = new PassKit.Assets()

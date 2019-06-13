@@ -325,19 +325,35 @@ const streamToBuffer = async (stream: Stream) => {
 }
 
 const loadImage = async (url: string) => {
-    return new Promise<Buffer>((resolve, reject) => {
-        request.get(url, { encoding: null }, async (error, res, body) => {
-            if (error) {
-                reject(error)
-            } else {
-                if (res.statusCode === 200) {
-                    resolve(body)
+    const regex = new RegExp('https?://')
+    // local
+    if (url.search(regex) === -1) {
+        return new Promise<Buffer>((resolve, reject) => {
+            fs.readFile(url, (error, data) => {
+                if (error) {
+                    reject(error)
                 } else {
-                    reject(new Error(`[Passkit] error: ${url} not found.`))
+                    resolve(data)
                 }
-            }
+            })
         })
-    })
+    }
+    // https|http
+    else {
+        return new Promise<Buffer>((resolve, reject) => {
+            request.get(url, { encoding: null }, async (error, res, body) => {
+                if (error) {
+                    reject(error)
+                } else {
+                    if (res.statusCode === 200) {
+                        resolve(body)
+                    } else {
+                        reject(new Error(`[Passkit] error: ${url} not found.`))
+                    }
+                }
+            })
+        })
+    }
 }
 
 const imageArchive = async (archive: Archiver.Archiver, manifest: Manifest, filename: string, url: string) => {
