@@ -5,5 +5,6 @@ test
 tsconfig.json
 
 .DS_Store
+bin/.DS_Store
 
 */**/.DS_Store

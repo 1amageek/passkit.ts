@@ -62,12 +62,14 @@ typings/
 
 lib/
 keys/
-test/
-!test/config_template.ts
+test/assets
+test/keys
+test/temp
+text/account.json
 temp/
 resource/
 test/config.ts
 *.json
 !tsconfig.json
 !package.json
-!tslint.json
+
