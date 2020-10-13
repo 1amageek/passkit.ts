@@ -30,8 +30,8 @@ export default class Manifest {
             throw new Error('[Passkit] error: secret path not found')
         }
 
-        const signerCertData: string = await fs.readFileSync(path.resolve(process.cwd(), secretPath), { encoding: 'utf8' })
-        const wwdrCertData: string = await fs.readFileSync(path.resolve(process.cwd(), wwdrPath), { encoding: 'utf8' })
+        const signerCertData: string = fs.readFileSync(path.resolve(process.cwd(), secretPath), { encoding: 'utf8' })
+        const wwdrCertData: string = fs.readFileSync(path.resolve(process.cwd(), wwdrPath), { encoding: 'utf8' })
         const password: string = certificates.options.password
         const certificate: forge.pki.Certificate = forge.pki.certificateFromPem(signerCertData)
         const wwdr: forge.pki.Certificate = forge.pki.certificateFromPem(wwdrCertData)

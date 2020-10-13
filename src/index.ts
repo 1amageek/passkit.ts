@@ -385,7 +385,7 @@ export const generate = async (template: Template, assets: Assets, personalizati
     const filePath: string = `/pass/${template.serialNumber}`
     const tempLocalFile = path.join(tmpDir, `${filePath}/pass.pkpass`)
     const tempLocalDir = path.dirname(tempLocalFile)
-    await mkdirp.sync(tempLocalDir)
+    mkdirp.sync(tempLocalDir)
     const passWriteStream = fs.createWriteStream(tempLocalFile)
     const archive = Archiver.create('zip', { store: true })
     archive.pipe(passWriteStream)
