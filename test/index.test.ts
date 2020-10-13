@@ -10,10 +10,10 @@ describe("Manifest", () => {
 
         test("Generate by data assets", async () => {
             const assets = new PassKit.Assets()
-            assets.icon = process.cwd() + "/assets/icon.png"
-            assets.icon2x = "./assets/icon@2x.png"
-            assets.logo = "./assets/logo.png"
-            assets.logo2x = "./assets/logo@2x.png"
+            assets.icon = process.cwd() + "/test/assets/icon.png"
+            assets.icon2x = process.cwd() + "/test/assets/icon@2x.png"
+            assets.logo = process.cwd() + "/test/assets/logo.png"
+            assets.logo2x = process.cwd() + "/test/assets/logo@2x.png"
             const pass: PassKit.Pass = {}
             pass.headerFields = []
             pass.primaryFields = [

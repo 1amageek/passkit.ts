@@ -3,14 +3,9 @@
   "name": "@1amageek/passkit",
   "version": "0.3.3",
   "scripts": {
-    "lint": "./node_modules/.bin/tslint -p tslint.json",
+    "lint": "eslint \"src/**/*\"",
     "prepare": "npm run build",
-    "build": "./node_modules/.bin/tsc -d",
-    "serve": "npm run build && firebase serve --only functions",
-    "shell": "npm run build && firebase experimental:functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "build": "./node_modules/.bin/tsc -d"
   },
   "description": "passkit.ts is Passkit generator",
   "contributors": [
