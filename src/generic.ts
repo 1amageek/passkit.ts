@@ -3,7 +3,7 @@ import Template from './template'
 
 export default class Generic extends Template {
 
-    constructor(pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string) {
-        super(PassKit.Style.generic, pass, organizationName, description, serialNumber)
-    }
+	constructor(pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string) {
+		super("generic", pass, organizationName, description, serialNumber)
+	}
 }

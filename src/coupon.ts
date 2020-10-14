@@ -3,7 +3,7 @@ import Template from './template'
 
 export default class Coupon extends Template {
 
-    constructor(pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string) {
-        super(PassKit.Style.coupon, pass, organizationName, description, serialNumber)
-    }
+	constructor(pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string) {
+		super("coupon", pass, organizationName, description, serialNumber)
+	}
 }
