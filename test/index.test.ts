@@ -31,7 +31,7 @@ describe("Manifest", () => {
 				messageEncoding: "iso-8859-1"
 			}
 
-			const storeCard: PassKit.StoreCard = new PassKit.StoreCard(pass, "Stamp", "desc", UUID.v4())
+			const storeCard: PassKit.Template = new PassKit.Template("Stamp", "desc", UUID.v4(), { storeCard: pass })
 			storeCard.webServiceURL = "https://ticket-392a5.firebaseapp.com/_"
 			storeCard.barcode = barcode
 			storeCard.relevantDate = new Date()
@@ -84,7 +84,7 @@ describe("Manifest", () => {
 				messageEncoding: "iso-8859-1"
 			}
 
-			const storeCard: PassKit.StoreCard = new PassKit.StoreCard(pass, "Stamp", "desc", UUID.v4())
+			const storeCard: PassKit.Template = new PassKit.Template("Stamp", "desc", UUID.v4(), { storeCard: pass })
 			storeCard.webServiceURL = "https://ticket-392a5.firebaseapp.com/_"
 			storeCard.barcode = barcode
 			storeCard.relevantDate = new Date()

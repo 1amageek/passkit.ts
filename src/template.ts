@@ -1,6 +1,14 @@
 import * as PassKit from './index'
 import * as Format from 'dateformat'
 
+interface AnyPass {
+	boardingPass?: PassKit.Pass
+	coupon?: PassKit.Pass
+	eventTicket?: PassKit.Pass
+	generic?: PassKit.Pass
+	storeCard?: PassKit.Pass
+}
+
 /// Template
 export default class Template {
 
@@ -75,34 +83,17 @@ export default class Template {
 	nfc?: PassKit.NFC
 
 	/// constructor
-	constructor(style: PassKit.Style, pass: PassKit.Pass, organizationName: string, description: string, serialNumber: string) {
+	constructor(organizationName: string, description: string, serialNumber: string, pass: AnyPass) {
 		this.passTypeIdentifier = PassKit.certificates.options.passTypeIdentifier
 		this.teamIdentifier = PassKit.certificates.options.teamIdentifier
 		this.organizationName = organizationName
 		this.description = description
 		this.serialNumber = serialNumber
-		switch (style) {
-			case "boardingPass": {
-				this.boardingPass = pass
-				break
-			}
-			case "coupon": {
-				this.coupon = pass
-				break
-			}
-			case "eventTicket": {
-				this.eventTicket = pass
-				break
-			}
-			case "generic": {
-				this.generic = pass
-				break
-			}
-			case "storeCard": {
-				this.storeCard = pass
-				break
-			}
-		}
+		this.boardingPass = pass.boardingPass
+		this.coupon = pass.coupon
+		this.eventTicket = pass.eventTicket
+		this.generic = pass.generic
+		this.storeCard = pass.storeCard
 	}
 
 	validate() {

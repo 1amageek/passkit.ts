@@ -8,13 +8,8 @@ import * as Archiver from 'archiver'
 import Assets from './assets'
 import Template from './template'
 import Manifest from './manifest'
-import BoardingPass from './boardingPass'
-import Coupon from './coupon'
-import EventTicket from './eventTicket'
-import Generic from './generic'
-import StoreCard from './storeCard'
 
-export { Assets, BoardingPass, Coupon, EventTicket, Generic, StoreCard, Template }
+export { Assets, Template }
 
 const tmpDir: string = process.env.NODE_ENV === 'production' ? `${os.tmpdir()}/passkit` : `${process.cwd()}/temp`
 
@@ -180,29 +175,42 @@ export type NumberStyle = "PKNumberStyleDecimal" | "PKNumberStylePercent" | "PKN
 
 /// Pass Structure Dictionary Keys
 export type Pass = {
+	/// Optional. Fields to be displayed in the header on the front of the pass. 
+	/// Use header fields sparingly; unlike all other fields, they remain visible when a stack of passes are displayed.
 	headerFields?: Field[]
+	/// Optional. Fields to be displayed prominently on the front of the pass.
 	primaryFields?: Field[]
+	/// Optional. Fields to be displayed on the front of the pass.
 	secondaryFields?: Field[]
+	/// Optional. Additional fields to be displayed on the front of the pass.
 	auxiliaryFields?: Field[]
+	/// Optional. Fields to be on the back of the pass.
 	backFields?: Field[]
+	/// Required for boarding passes; otherwise not allowed. Type of transit. Must be one of the following values: PKTransitTypeAir, PKTransitTypeBoat, PKTransitTypeBus, PKTransitTypeGeneric,PKTransitTypeTrain.
 	transitType?: TransitType
 }
 
 /// Beacon Dictionary Keys
 export type Beacon = {
+	/// Optional. Major identifier of a Bluetooth Low Energy location beacon.
 	major: string
+	/// Optional. Minor identifier of a Bluetooth Low Energy location beacon.
 	minor: string
+	/// Required. Unique identifier of a Bluetooth Low Energy location beacon.
 	proximityUUID: string
-	/// Text displayed on the lock screen when the pass is currently relevant. For example, a description of the nearby location such as “Store nearby on 1st and Main.”
+	/// Optional. Text displayed on the lock screen when the pass is currently relevant. For example, a description of the nearby location such as “Store nearby on 1st and Main.”
 	relevantText: string
 }
 
 /// Location Dictionary Keys
 export type Location = {
+	/// Optional. Altitude, in meters, of the location.
 	altitude?: number
+	/// Required. Latitude, in degrees, of the location.
 	latitude: number
+	/// Required. Longitude, in degrees, of the location.
 	longitude: number
-	/// Text displayed on the lock screen when the pass is currently relevant. For example, a description of the nearby location such as “Store nearby on 1st and Main.”
+	/// Optional. Text displayed on the lock screen when the pass is currently relevant. For example, a description of the nearby location such as “Store nearby on 1st and Main.”
 	relevantText?: string
 }
 
@@ -259,13 +267,10 @@ export type PersonalizationField = "PKPassPersonalizationFieldName" | "PKPassPer
 
 /// Personalization
 export type Personalization = {
-
 	/// Required. The contents of this array define the data requested from the user. The signup form’s fields are generated based on these keys.
 	requiredPersonalizationFields: PersonalizationField[]
-
 	/// Required. A brief description of the program. This is displayed on the signup sheet, under the personalization logo.
 	description: string
-
 	/// Optional. A description of the program’s terms and conditions. This string can contain HTML link tags to external content.
 	/// If present, this information is displayed after the user enters their personal information and taps the Next button. The user then has the option to agree to the terms, or to cancel out of the signup process.
 	termsAndConditions?: string
