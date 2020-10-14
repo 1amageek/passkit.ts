@@ -241,7 +241,15 @@ export class RGB {
 		this.b = b
 	}
 
-	getValue(): string {
+	toValue(): { [key: string]: number } {
+		return {
+			r: this.r,
+			g: this.g,
+			b: this.b
+		}
+	}
+
+	toString(): string {
 		return `rgb(${this.r}, ${this.g}, ${this.b})`
 	}
 }

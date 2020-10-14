@@ -23,7 +23,7 @@ export default class Template {
 	associatedStoreIdentifiers?: number[]
 
 	// Companion App Keys
-	userInfo?: { [key: string]: Object }
+	userInfo?: { [key: string]: any }
 
 	// Expiration Keys
 	expirationDate?: Date
@@ -144,7 +144,7 @@ export default class Template {
 		for (const key in this) {
 			const value = this[key]
 			if (value instanceof PassKit.RGB) {
-				pass[key] = (value as PassKit.RGB).getValue()
+				pass[key] = (value as PassKit.RGB).toString()
 			} else if (value instanceof Date) {
 				pass[key] = Format((value as Date), 'isoUtcDateTime')
 			} else {
