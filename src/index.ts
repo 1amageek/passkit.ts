@@ -15,7 +15,7 @@ import Generic from './generic'
 import StoreCard from './storeCard'
 import { Stream } from 'stream'
 
-export { Assets, BoardingPass, Coupon, EventTicket, Generic, StoreCard }
+export { Assets, BoardingPass, Coupon, EventTicket, Generic, StoreCard, Template }
 
 const tmpDir: string = process.env.NODE_ENV === 'production' ? `${os.tmpdir()}/passkit` : `${process.cwd()}/temp`
 
