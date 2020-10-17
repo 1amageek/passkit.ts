@@ -1,7 +1,7 @@
 {
 	"private": false,
 	"name": "@1amageek/passkit",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"scripts": {
 		"lint": "eslint \"src/**/*\"",
 		"prepare": "npm run build",
