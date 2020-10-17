@@ -314,17 +314,20 @@ const loadImage = async (url: string) => {
 	}
 }
 
-const imageArchive = async (archive: Archiver.Archiver, manifest: Manifest, filename: string, url: string) => {
-	return new Promise(async (resolve, reject) => {
-		try {
-			const data = await loadImage(url)
-			archive.append(data, { name: filename })
-			manifest.addFile(data, filename, "utf8")
-			resolve()
-		} catch (error) {
-			reject(error)
-		}
-	})
+const imageArchive = async (archive: Archiver.Archiver, manifest: Manifest, filename: string, url: string | Function) => {
+	if (typeof url === 'string') {
+		return new Promise(async (resolve, reject) => {
+			try {
+				const data = await loadImage(url)
+				archive.append(data, { name: filename })
+				manifest.addFile(data, filename, "utf8")
+				resolve()
+			} catch (error) {
+				reject(error)
+			}
+		})
+	}
+	return url()
 }
 
 const cleanup = async (targetPath: string) => {
@@ -366,7 +369,7 @@ export const generate = async (template: Template, assets: Assets, personalizati
 	const tasks = []
 	for (const key in assets) {
 		const filename: string = `${key.replace('2x', '@2x')}.png`
-		const url: string = assets[key]
+		const url: string | Function = assets[key]
 		const task = imageArchive(archive, manifest, filename, url)
 		tasks.push(task)
 	}

@@ -1,5 +1,6 @@
 import * as PassKit from '../src/index'
 import * as UUID from 'uuid'
+import * as request from 'request'
 import { options } from './config'
 
 PassKit.initialize(options)
@@ -64,7 +65,21 @@ describe("Manifest", () => {
 			assets.icon = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
 			assets.icon2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
 			assets.logo = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
-			assets.logo2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
+			assets.logo2x = () => {
+				return new Promise<Buffer>((resolve, reject) => {
+					request.get("https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7", { encoding: null }, async (error, res, body) => {
+						if (error) {
+							reject(error)
+						} else {
+							if (res.statusCode === 200) {
+								resolve(body)
+							} else {
+								reject(new Error(`[Passkit] error: URL not found.`))
+							}
+						}
+					})
+				})
+			}
 			// assets.personalizationLogo = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/personalizationLogo.png?alt=media&token=ea39f213-c0ef-4173-b3b0-0b26ad4418a2"
 			// assets.personalizationLogo2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/personalizationLogo%402x.png?alt=media&token=d262355f-c592-47e1-a7e0-36dab7158968"
 			const pass: PassKit.Pass = {}

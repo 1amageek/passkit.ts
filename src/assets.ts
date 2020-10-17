@@ -1,35 +1,38 @@
 
+/// Assets manages images. You can specify the URL and Function for the property. 
+/// If you set the URL, the data will be acquired automatically internally.
+/// If you specify a Function, make sure to return Promise<Buffer>.
 export default class Assets {
 
 	// 29×29
-	icon?: string
-	icon2x?: string
+	icon?: string | Function
+	icon2x?: string | Function
 
 	// 160×50
-	logo?: string
-	logo2x?: string
+	logo?: string | Function
+	logo2x?: string | Function
 
 	// 180×220
-	background?: string
-	background2x?: string
+	background?: string | Function
+	background2x?: string | Function
 
 	// 90×90
-	thumbnail?: string
-	thumbnail2x?: string
+	thumbnail?: string | Function
+	thumbnail2x?: string | Function
 
 	// 286×15
-	footer?: string
-	footer2x?: string
+	footer?: string | Function
+	footer2x?: string | Function
 
 	// eventTicket: 375×98
 	// coupon: 375×144
 	// other: 375×123
-	strip?: string
-	strip2x?: string
+	strip?: string | Function
+	strip2x?: string | Function
 
 	// 150×40
-	personalizationLogo?: string
-	personalizationLogo2x?: string
+	personalizationLogo?: string | Function
+	personalizationLogo2x?: string | Function
 
 	validate() {
 		const requireImages = ['logo', 'icon', 'logo2x', 'icon2x']
