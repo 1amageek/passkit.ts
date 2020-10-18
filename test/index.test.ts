@@ -64,8 +64,38 @@ describe("Manifest", () => {
 			const assets = new PassKit.Assets()
 			assets.icon = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
 			assets.icon2x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
-			assets.logo = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
+			assets.icon3x = "https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7"
+			assets.logo = () => {
+				return new Promise<Buffer>((resolve, reject) => {
+					request.get("https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7", { encoding: null }, async (error, res, body) => {
+						if (error) {
+							reject(error)
+						} else {
+							if (res.statusCode === 200) {
+								resolve(body)
+							} else {
+								reject(new Error(`[Passkit] error: URL not found.`))
+							}
+						}
+					})
+				})
+			}
 			assets.logo2x = () => {
+				return new Promise<Buffer>((resolve, reject) => {
+					request.get("https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7", { encoding: null }, async (error, res, body) => {
+						if (error) {
+							reject(error)
+						} else {
+							if (res.statusCode === 200) {
+								resolve(body)
+							} else {
+								reject(new Error(`[Passkit] error: URL not found.`))
+							}
+						}
+					})
+				})
+			}
+			assets.logo3x = () => {
 				return new Promise<Buffer>((resolve, reject) => {
 					request.get("https://firebasestorage.googleapis.com/v0/b/ticket-392a5.appspot.com/o/version%2F1%2Fevent%2F2i5cO03PDUvsETgLcUSp%2Ficon%2F1526228899555.png?alt=media&token=541804cf-ead3-4889-bc6c-7d39014689a7", { encoding: null }, async (error, res, body) => {
 						if (error) {
