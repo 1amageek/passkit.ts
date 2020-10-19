@@ -63,9 +63,10 @@ export class Certificates {
 	async mountCertificate(url: string, destination: string) {
 		const writeStream = fs.createWriteStream(destination)
 		return new Promise<string>((resolve, reject) => {
-			https.get(url, (res) => {
-				res.pipe(writeStream)
-			})
+			https
+				.get(url, (res) => {
+					res.pipe(writeStream)
+				})
 				.on('close', () => {
 					resolve(destination)
 				})
@@ -143,7 +144,7 @@ export const initialize = (options?: Options) => {
 export type TransitType = "PKTransitTypeAir" | "PKTransitTypeBoat" | "PKTransitTypeBus" | "PKTransitTypeGeneric" | "PKTransitTypeTrain"
 
 /// Standard Field Dictionary
-export type Field = {
+export interface StandardField {
 	attributedValue?: any
 	changeMessage?: string
 	dataDetectorTypes?: DataDetectorTypes[]
@@ -154,7 +155,7 @@ export type Field = {
 }
 
 /// Date Field Keys
-export type DateField = {
+export interface DateField extends StandardField {
 	dateStyle: DateStyle
 	ignoresTimeZone: boolean
 	isRelative: boolean
@@ -165,10 +166,12 @@ export type DateField = {
 export type DateStyle = "PKDateStyleNone" | "PKDateStyleShort" | "PKDateStyleMedium" | "PKDateStyleLong" | "PKDateStyleFull"
 
 /// Number Field Keys
-export type NumberField = {
+export interface NumberField extends StandardField {
 	currencyCode: string,
 	numberStyle: NumberStyle
 }
+
+export type Field = StandardField | NumberField | DateField
 
 /// Number Style
 export type NumberStyle = "PKNumberStyleDecimal" | "PKNumberStylePercent" | "PKNumberStyleScientific" | "PKNumberStyleSpellOut"

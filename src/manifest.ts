@@ -73,9 +73,7 @@ export default class Manifest {
 		const pemMessages = forge.pem.decode(keydata)
 
 		// getting signer private key
-		const signerKeyMessage = pemMessages.find(message =>
-			message.type.includes('KEY'),
-		)
+		const signerKeyMessage = pemMessages.find(message => message.type.includes('KEY'))
 
 		if (!signerKeyMessage) {
 			throw new Error('[Passkit] error: Invalid certificate, no key found')
